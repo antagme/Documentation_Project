@@ -18,6 +18,10 @@ _Docker Images_ used for this example:
 - Fastest operations with LDAP Client Utilities
 
 ## Instalation
+### Hostnames and our ips
+LDAP Server: ldap.edt.org 172.18.0.2
+Kerberos Server: kserver.edt.org 172.18.0.3
+Client: client.edt.org  172.18.0.8
 
 ### Starting
 Starting from the base that we already have an openldap server running without these technologies.
@@ -51,7 +55,47 @@ uid: user01
 uidNumber: 7001
 gidNumber: 610
 homeDirectory: /var/tmp/home/1asix/user01
-</code></pre>    
-If you were thinking that the entry was incorrect because it did not have a `userPassword` entry, you are wrong. It is to avoid accessing that user with password.
+</code></pre>
 
-In Kerberos Machine , 
+In our case , we should create a Principal entry with name user01.
+
+Note:_If you were thinking that the entry was incorrect because it did not have a `userPassword` entry, you are wrong. It is to avoid accessing that user with password_
+
+In Kerberos Machine:
+
+    kadmin.local -q "addprinc -pw kuser01 user01"
+
+For the ticket Obtaining (`kinit`) for user01 , we should user the _password_ kuser01.
+
+On the 3 Containers , we should have the same krb5.conf file, in our case , this one.
+
+    [logging]
+      default = FILE:/var/log/krb5libs.log
+      kdc = FILE:/var/log/krb5kdc.log
+      admin_server = FILE:/var/log/kadmind.log
+    [libdefaults]
+      dns_lookup_realm = false
+      ticket_lifetime = 24h
+      renew_lifetime = 7d
+      forwardable = true
+      rdns = false
+      default_realm = EDT.ORG
+    [realms]
+      EDT.ORG = {
+      kdc = kserver.edt.org
+      admin_server = kserver.edt.org
+      }
+    [domain_realm]
+     .edt.org = EDT.ORG
+    edt.org = EDT.ORG
+    
+Make the following order in the 3 containers to make sure everything will work.
+
+    supervisorctl restart all
+
+This gonna restart all services on the container.
+
+Now in the client container , we gonna try if we can obtain ticket of **user01**.
+
+    [root@client /]# kinit user01
+    
