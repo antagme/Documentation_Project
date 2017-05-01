@@ -292,12 +292,14 @@ This expression transform all entries like `*@EDT.ORG` to Ldap User Entry like `
 Apply the _slapd.conf_ file and perform `supervisorctl restart all` on 3 Containers.
 
 According our _Client Configuration_ , we should try if our configuration is working well with this 3 commands.
+Note:_ Important , in the client , you need too the packets installed in _Ldap_ Server for GSSAPI._
 
 1. Obtain Ticket
       * `kinit user01`
       
 2. Try If ldap perform properly REGEX filtering.
-      * `ldapwhoami -h ldap.edt.org -Y GSSAPI -ZZ`
+      * `ldapwhoami -h ldap.edt.org  -b 'dc=edt,dc=org' -Y GSSAPI -ZZ`
+
 If the output is like this , you are success!!!
 
     SASL/GSSAPI authentication started
@@ -308,7 +310,7 @@ If the output is like this , you are success!!!
 
 
 3. Perform a ldapsearch command for being secure about our success.
-      * `ldapsearch -h ldap.edt.org -Y GSSAPI -ZZ cn=user01`
+      * `ldapsearch -h ldap.edt.org -Y GSSAPI  -b 'dc=edt,dc=org' -ZZ cn=user01`
 
 Output:
 
@@ -348,4 +350,36 @@ Output:
     # numResponses: 2
     # numEntries: 1
 
-Now we have _GSSAPI_ AUTHENTIFICATION in our ldap server , but we need to complete the last step
+Now we have _GSSAPI_ AUTHENTIFICATION in our ldap server , but we need to complete the last step.
+
+#### Ldap.conf file in Client Container.
+
+The last step is configure our ldap.conf file for easiest operations with LDAP Client utilities.
+
+Our [ldap.conf](https://raw.githubusercontent.com/antagme/client_gssapi/master/files/ldap.conf) 
+
+    # OpenLDAP client configuration file. Used for host default settings
+    BASE            dc=edt,dc=org
+    URI             ldap://ldap.edt.org/
+    SASL_MECH GSSAPI
+    SASL_REALM EDT.ORG
+    TLS_CACERT      /etc/ssl/certs/cacert.pem
+    #TLS_CACERTDIR    /etc/openldap/certs/
+
+
+- BASE: The Base branch of our _Ldap_ _DDBB_ (for not need  -b 'dc=edt,dc=org' on ldap client utility command )
+- URI: the uri to ldap server (FQDN) (for not need -H ldap://ldap.edt.org or -h ldap.edt.org on ldap client utility command)
+- SASL_MECH: The SASL mech we will use , in our case GSSAPI ( for not need -Y GSSAPI on ldap client utility command)
+- SASL_REALM: The SASL Realm we defined on slapd.conf file
+- TLS_CACERT: The Absolute route to the CA Cert who signed Ldap Certificates
+
+Note: The file can be found in _/etc/openldap/ldap.conf_
+
+Configuring this file facilitates the administration of the ldap server through the client utilities of this.
+Now our commands will be shorter.
+
+
+| Command| Before | After  |
+| ------------- |:-------------:| -----:|
+| StartTLS Ldapsearch | `ldapsearch -h ldap.edt.org -Y GSSAPI  -b 'dc=edt,dc=org' -ZZ ` | `ldapsearch -ZZ `| 
+| StartTLS ldapwhoami | `ldapwhoami -h ldap.edt.org  -b 'dc=edt,dc=org' -Y GSSAPI -ZZ`  | `ldapwhoami -ZZ` |
