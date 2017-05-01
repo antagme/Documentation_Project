@@ -289,7 +289,63 @@ This expression transform all entries like `*@EDT.ORG` to Ldap User Entry like `
 
     authz-regexp "^uid=([^,]+),cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=usuaris,dc=edt,dc=org"
 
-Apply the _slapd.conf_ file and perform `supervisorctl restart all`
+Apply the _slapd.conf_ file and perform `supervisorctl restart all` on 3 Containers.
 
 According our _Client Configuration_ , we should try if our configuration is working well with this 3 commands.
 
+1. Obtain Ticket
+      * `kinit user01`
+      
+2. Try If ldap perform properly REGEX filtering.
+      * `ldapwhoami -h ldap.edt.org -Y GSSAPI -ZZ`
+If the output is like this , you are success!!!
+
+    SASL/GSSAPI authentication started
+    SASL username: user01@EDT.ORG
+    SASL SSF: 56
+    SASL data security layer installed.
+    dn:cn=user01,ou=usuaris,dc=edt,dc=org
+
+
+3. Perform a ldapsearch command for being secure about our success.
+      * `ldapsearch -h ldap.edt.org -Y GSSAPI -ZZ cn=user01`
+
+Output:
+
+    SASL/GSSAPI authentication started
+    SASL username: user01@EDT.ORG
+    SASL SSF: 56
+    SASL data security layer installed.
+    # extended LDIF
+    #
+    # LDAPv3
+    # base <dc=edt,dc=org> (default) with scope subtree
+    # filter: cn=user01
+    # requesting: ALL
+    #
+
+    # user01, usuaris, edt.org
+    dn: cn=user01,ou=usuaris,dc=edt,dc=org
+    objectClass: posixAccount
+    objectClass: inetOrgPerson
+    cn: user01
+    cn: alumne01 de 1asix de todos los santos
+    sn: alumne01
+    homePhone: 555-222-0001
+    mail: user01@edt.org
+    description: alumne de 1asix
+    ou: 1asix
+    uid: user01
+    uidNumber: 7001
+    gidNumber: 610
+    homeDirectory: /var/tmp/home/1asix/user01
+    userPassword:: e1NBU0x9dXNlcjAxQEVEVC5PUkc=
+
+    # search result
+    search: 5
+    result: 0 Success
+
+    # numResponses: 2
+    # numEntries: 1
+
+Now we have _GSSAPI_ AUTHENTIFICATION in our ldap server , but we need to complete the last step
