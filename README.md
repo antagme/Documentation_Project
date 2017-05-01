@@ -36,22 +36,22 @@ In our case the _LDAP server host_ is `ldap.edt.org` so we should create the pri
     kadmin.local -q "addprinc -pw randkey ldap/ldap.edt.org"
 
 Since we are in the kerberos machine, we will take advantage of and create a principal to make tests later with the client, in our case, as we have in our users of ldap the following entry:
-
-    dn: **cn=user01**,ou=usuaris,dc=edt,dc=org
-    objectclass: posixAccount
-    objectclass: inetOrgPerson
-    cn: user01
-    cn: alumne01 de 1asix de todos los santos
-    sn: alumne01
-    homephone: 555-222-0001
-    mail: user01@edt.org
-    description: alumne de 1asix
-    ou: 1asix
-    uid: user01
-    uidNumber: 7001
-    gidNumber: 610
-    homeDirectory: /var/tmp/home/1asix/user01
-    
+<pre><code>
+dn: <b>cn=user01</b>,ou=usuaris,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user01
+cn: alumne01 de 1asix de todos los santos
+sn: alumne01
+homephone: 555-222-0001
+mail: user01@edt.org
+description: alumne de 1asix
+ou: 1asix
+uid: user01
+uidNumber: 7001
+gidNumber: 610
+homeDirectory: /var/tmp/home/1asix/user01
+</code></pre>    
 If you were thinking that the entry was incorrect because it did not have a `userPassword` entry, you are wrong. It is to avoid accessing that user with password.
 
 In Kerberos Machine , 
