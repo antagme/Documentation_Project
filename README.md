@@ -19,9 +19,10 @@ _Docker Images_ used for this example:
 
 ## Instalation
 ### Hostnames and our ips
-LDAP Server: ldap.edt.org 172.18.0.2
-Kerberos Server: kserver.edt.org 172.18.0.3
-Client: client.edt.org  172.18.0.8
+
+- LDAP Server: ldap.edt.org 172.18.0.2
+- Kerberos Server: kserver.edt.org 172.18.0.3
+- Client: client.edt.org  172.18.0.8
 
 ### Starting
 Starting from the base that we already have an openldap server running without these technologies.
@@ -31,6 +32,37 @@ To properly configure the servers and the client, we have to be careful in 3 ess
 - Communication through the 3 Containers is correct , including the ticket obtaining.
 - Configure properly the slapd.conf file with SASL options.
 - Configure the client ldap.conf file for automatized SASL GSSAPI use
+
+In our case for this example we will use some docker containers that I created for the occasion.
+
+#### Create Docker Network
+
+_This is for a very important reason, we need to always have the same container IP for the proper Ip distribution through LDAP and NSLCD.
+In the default Bridge Network , we can't assign ips for containers_
+
+ ```bash
+ # docker network create --subnet 172.18.0.0/16 -d bridge ldap
+ ```
+ 
+#### Run Docker LDAP
+ ```bash
+ # docker run --name ldap --hostname ldap.edt.org --net ldap --ip 172.18.0.2  --detach antagme/ldap_gssapi
+ ```  
+
+#### Run Docker Kerberos (TGT)  
+ ```bash
+ # docker run --name kerberos --hostname kserver.edt.org --net ldap --ip 172.18.0.3  --detach antagme/kerberos:supervisord
+ ```
+ 
+#### Run Docker Client   
+ ```bash
+ # docker run --name client --hostname client.edt.org --net ldap --ip 172.18.0.8 --detach antagme/client_gssapi
+ ```
+
+These dockers containers are not interactive, to access you have to do the following order:
+
+    docker exec --interactive --tty [Docker Name] bash
+    
 
 ### Configure
 
