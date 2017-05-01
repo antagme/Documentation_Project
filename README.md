@@ -163,6 +163,7 @@ Inside the _LDAP Container_ , we need to install first , 2 packets for support G
     dnf install -y cyrus-sasl-gssapi cyrus-sasl-ldap
     
 Now , lets see our [slapd.conf](https://raw.githubusercontent.com/antagme/ldap_gssapi/master/files/slapd-gssapi.conf) file:
+
 ```diff
 #
 # See slapd.conf(5) for details on configuration options.
@@ -229,6 +230,18 @@ access to *
   by peername.ip=172.18.0.0%255.255.0.0 read
   by * read break
 ```
+
+I have marked in two colors the things that we have to configure, the red line (-) is where you have to be especially careful, because it can cause confusion.
+
+Let's analyze them one by one.
+
+     sasl-secprops noanonymous,noplain,noactive
+     
+sasl-secprops , Acording Openldap Documentation:
+> Used to specify Cyrus SASL security properties.     
+
+And acording [LDAP System Administration: Putting Directories to Work](https://books.google.es/books?id=utsMgEfnPSEC&pg=PT56&lpg=PT56&dq=%2B+sasl-secprops+noanonymous,noplain,noactive&source=bl&ots=LonrHJNZVc&sig=kL1iSuR3_4SyJYePIiiJHJ3S4Y8&hl=es&sa=X&ved=0ahUKEwiUoNPW787TAhXInRoKHTCmA7sQ6AEIMDAB#v=onepage&q=%2B+sasl-secprops+noanonymous%2Cnoplain%2Cnoactive&f=false) 
+GSSAPI Need this 3 options.
 
 
     
