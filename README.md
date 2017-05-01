@@ -30,8 +30,6 @@ To properly configure the servers and the client, we have to be careful in 3 ess
 
 ### Configure
 
-#### LDAP SERVER.
-
 Having the Kerberos and the LDAP containers working properly , the first pass is create the principal for LDAP service on **Openldap Server Host** , its so important!!!! 
 In our case the _LDAP server host_ is `ldap.edt.org` so we should create the principal in kerberos machine using:
 
@@ -39,7 +37,7 @@ In our case the _LDAP server host_ is `ldap.edt.org` so we should create the pri
 
 Since we are in the kerberos machine, we will take advantage of and create a principal to make tests later with the client, in our case, as we have in our users of ldap the following entry:
 
-    dn: cn=user01,ou=usuaris,dc=edt,dc=org
+    dn: **cn=user01**,ou=usuaris,dc=edt,dc=org
     objectclass: posixAccount
     objectclass: inetOrgPerson
     cn: user01
