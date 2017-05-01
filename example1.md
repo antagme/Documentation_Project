@@ -29,7 +29,7 @@ Starting from the base that we already have an openldap server running without t
 
 To properly configure the servers and the client, we have to be careful in 3 essential things.
 
-- Communication through the 3 Containers is correct , including the ticket obtaining.
+- Communication through the 3 Containers is correct , including the ticket obtaining
 - Configure properly the slapd.conf file with SASL options.
 - Configure the client ldap.conf file for automatized SASL GSSAPI use
 
