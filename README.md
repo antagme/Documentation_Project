@@ -163,7 +163,8 @@ Inside the _LDAP Container_ , we need to install first , 2 packets for support G
     dnf install -y cyrus-sasl-gssapi cyrus-sasl-ldap
     
 Now , lets see our [slapd.conf](https://raw.githubusercontent.com/antagme/ldap_gssapi/master/files/slapd-gssapi.conf) file:
-<pre><code>
+
+```diff
 #
 # See slapd.conf(5) for details on configuration options.
 # This file should NOT be world readable.
@@ -190,20 +191,20 @@ pidfile		/var/run/openldap/slapd.pid
 
 # Limit SASL options to only GSSAPI and not other client-favorites. Apparently there is an issue where
 # clients will default to non-working SASL mechanisms and will make you angry.
-<b>sasl-secprops noanonymous,noplain,noactive</b>
++ sasl-secprops noanonymous,noplain,noactive
 
 # SASL connection information. The realm should be your Kerberos realm as configured for the system. The
 # host should be the LEGITIMATE hostname of this server
-<b>sasl-realm EDT.ORG</b>
-<span style="color:red">sasl-host ldap.edt.org</span>
++ sasl-realm EDT.ORG
+- sasl-host ldap.edt.org
 
 # Rewrite certain SASL bind DNs to more readable ones. Otherwise you bind as some crazy default
 # that ends up in a different base than your actual one. This uses regex to rewrite that weird
 # DN and make it become one that you can put within your suffix.
-<b>authz-policy from
-authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" "cn=Manager,dc=edt,dc=org"
-authz-regexp "^uid=host/([^,]+)\.edt\.org,cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=hosts,dc=edt,dc=org"
-authz-regexp "^uid=([^,]+),cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=usuaris,dc=edt,dc=org"</b>
++ authz-policy from
++ authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" "cn=Manager,dc=edt,dc=org"
++ authz-regexp "^uid=host/([^,]+)\.edt\.org,cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=hosts,dc=edt,dc=org"
++ authz-regexp "^uid=([^,]+),cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=usuaris,dc=edt,dc=org"
 # ------------------------------------------------------------------------------------------------------------
 # SSL certificate file paths
 TLSCACertificateFile /etc/ssl/certs/cacert.pem
@@ -228,7 +229,7 @@ access to attrs=userPassword
 access to * 
   by peername.ip=172.18.0.0%255.255.0.0 read
   by * read break
-</code></pre>
+```
 
 
 
