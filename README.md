@@ -96,13 +96,20 @@ gidNumber: 610
 homeDirectory: /var/tmp/home/1asix/user01
 </code></pre>
 
-In our case , we should create a Principal entry with name user01.
+In our case , we should create a Principal entry with name user01 , also , if u doesn't had admin principal , this is the moment.
 
 Note:_If you were thinking that the entry was incorrect because it did not have a `userPassword` entry, you are wrong. It is to avoid accessing that user with password_
 
 In Kerberos Machine:
 
+    kadmin.local -q "addprinc -pw admin admin/admin"
     kadmin.local -q "addprinc -pw kuser01 user01"
+
+Check if this admin/admin@EDT.ORG have a entry inside `/var/kerberos/krb5kdc/kadm5.acl` like this.
+
+    */admin@EDT.ORG *
+
+Note: _This Means All principal entries like **blablabla**/admin have Admin permission._
 
 For the ticket Obtaining (`kinit`) for user01 , we should user the _password_ kuser01.
 
@@ -203,7 +210,6 @@ pidfile		/var/run/openldap/slapd.pid
 # DN and make it become one that you can put within your suffix.
 + authz-policy from
 + authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" "cn=Manager,dc=edt,dc=org"
-+ authz-regexp "^uid=host/([^,]+)\.edt\.org,cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=hosts,dc=edt,dc=org"
 + authz-regexp "^uid=([^,]+),cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=usuaris,dc=edt,dc=org"
 # ------------------------------------------------------------------------------------------------------------
 # SSL certificate file paths
@@ -237,11 +243,53 @@ Let's analyze them one by one.
 
      sasl-secprops noanonymous,noplain,noactive
      
-sasl-secprops , Acording Openldap Documentation:
+sasl-secprops , According Openldap Documentation:
 > Used to specify Cyrus SASL security properties.     
 
-And acording [LDAP System Administration: Putting Directories to Work](https://books.google.es/books?id=utsMgEfnPSEC&pg=PT56&lpg=PT56&dq=%2B+sasl-secprops+noanonymous,noplain,noactive&source=bl&ots=LonrHJNZVc&sig=kL1iSuR3_4SyJYePIiiJHJ3S4Y8&hl=es&sa=X&ved=0ahUKEwiUoNPW787TAhXInRoKHTCmA7sQ6AEIMDAB#v=onepage&q=%2B+sasl-secprops+noanonymous%2Cnoplain%2Cnoactive&f=false) 
+And according [LDAP System Administration: Putting Directories to Work](https://books.google.es/books?id=utsMgEfnPSEC&pg=PT56&lpg=PT56&dq=%2B+sasl-secprops+noanonymous,noplain,noactive&source=bl&ots=LonrHJNZVc&sig=kL1iSuR3_4SyJYePIiiJHJ3S4Y8&hl=es&sa=X&ved=0ahUKEwiUoNPW787TAhXInRoKHTCmA7sQ6AEIMDAB#v=onepage&q=%2B+sasl-secprops+noanonymous%2Cnoplain%2Cnoactive&f=false) 
 GSSAPI Need this 3 options.
 
 
+The next one.
+
+    sasl-realm EDT.ORG
+
+This should be the realm defined on the krb5.conf file , in my case , EDT.ORG.
+
+The most important, in my opinion , because can make you some confusion.
+
+     sasl-host ldap.edt.org
+
+Here, you have to put the FQDN of your ldap server, not the kerberos server (as I did when I set it) it is very important that we import the keytab so that this option has some meaning.
+
+Let's import the keytab. In Ldap Container:
+
+    kadmin -p admin/admin
+    Authenticating as principal admin/admin with password.
+    Password for admin/admin@EDT.ORG:
+    kadmin: ktadd -k /etc/krb5.keytab ldap/ldap.edt.org
+
+
+If you have followed all my explanations, we only have to configure the ldap server to recognize the principals like ldap users, this is done using a REGEX filters, let's see it
+
+    authz-policy from
+    authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" "cn=Manager,dc=edt,dc=org"
+    authz-regexp "^uid=([^,]+),cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=usuaris,dc=edt,dc=org"
+
+The first line , enable authz-regex , according Openldap Documentation:
+> By default, processing of proxy authorization rules is disabled. The authz-policy directive must be set in the slapd.conf(5) file to enable authorization
+
+When you try some operation with ticket to Ldap server through ldap clients utilities , the identity of the client , is not like usually we are using (cn=user01,ou=usuaris,dc=edt,dc=org) , so we should transform it.
+
+This Expression transform all `*/admin@EDT.ORG` Principal Tickets to `cn=Manager,dc=edt,dc=org` , our Manager of the Ldap DDBB
     
+    authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" "cn=Manager,dc=edt,dc=org"
+
+This expression transform all entries like `*@EDT.ORG` to Ldap User Entry like `cn=*,ou=usuaris,dc=edt,dc=org`
+
+    authz-regexp "^uid=([^,]+),cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=usuaris,dc=edt,dc=org"
+
+Apply the _slapd.conf_ file and perform `supervisorctl restart all`
+
+According our _Client Configuration_ , we should try if our configuration is working well with this 3 commands.
+
