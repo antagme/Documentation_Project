@@ -10,6 +10,53 @@ In `Fedora` the order is the next.
 
 This will provide you some new files [/etc/nslcd.conf](https://raw.githubusercontent.com/antagme/ldap_supervisor/master/files/nslcd.conf) and [/etc/nsswitch.conf](https://raw.githubusercontent.com/antagme/ldap_supervisor/master/files/nsswitch.conf).
 
+And you should have correct entries for Groups , Users and Hosts.
+
+### Openldap Example Entry for User.
+
+    dn: cn=user01,ou=usuaris,dc=edt,dc=org
+    objectclass: posixAccount
+    objectclass: inetOrgPerson
+    cn: user01
+    cn: alumne01 de 1asix de todos los santos
+    sn: alumne01
+    homephone: 555-222-0001
+    mail: user01@edt.org
+    description: alumne de 1asix
+    ou: 1asix
+    uid: user01
+    uidNumber: 7001
+    gidNumber: 610
+    homeDirectory: /var/tmp/home/1asix/user01
+
+### Openldap Example Entry for Group.
+
+    dn: cn=1asix,ou=grups,dc=edt,dc=org
+    cn: 1asix
+    gidNumber: 610
+    description: Container per als grups de sistema linux
+    description: GRUPO CLASE 1 de asix
+    objectclass: top
+    objectclass: posixGroup
+    memberUid: user01
+    memberUid: user02
+    memberUid: user03
+    memberUid: user04
+    memberUid: user05
+
+### Openldap Example Entry for Host.
+
+    # pc1, hosts, edt.org
+    dn: cn=pc1,ou=hosts,dc=edt,dc=org
+    objectClass: top
+    objectClass: device
+    objectClass: ipHost
+    objectClass: ieee802Device
+    cn: pc1
+    ipHostNumber: 172.18.0.1
+    macAddress: 02:42:3a:be:ac:52
+    description: Ordinador aula
+
 ## Configuring nslcd daemon for retrieve information.
 
 Finished the packet installing , you have to configure the 2 new files.
