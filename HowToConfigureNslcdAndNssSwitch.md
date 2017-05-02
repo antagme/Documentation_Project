@@ -64,4 +64,45 @@ tls_reqcert never</b>
 * ssl startl_tls: Encrypted communication between server and daemon.
 * tls_reqcert never: Don't ask for the client Certificate.
 
+### nsswitch.conf
+
+This file determines the order for retrieve information.
+
+- Without SSS
+
+<pre><code>
+
+# /etc/nsswitch.conf
+#
+# An example Name Service Switch config file. This file should be
+# sorted with the most-used services at the beginning.
+# To use db, put the "db" in front of "files" for entries you want to be
+# looked up first in the databases
+
+
+passwd:     files <b> ldap  </b>
+shadow:     files <b> ldap  </b>
+group:      files <b> ldap  </b>
+
+hosts:  files <b> ldap </b> dns myhostname
+bootparams: nisplus [NOTFOUND=return] files
+
+ethers:     files
+netmasks:   files
+networks:   files
+protocols:  files
+rpc:        files
+services:   files sss
+
+netgroup:   files sss
+
+publickey:  nisplus
+
+automount:  files sss
+aliases: files nisplus
+
+</code></pre>
+
+Always first files , or your system gonna be @#!·. the next entry will be read after read system files
+
 
