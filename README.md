@@ -19,6 +19,9 @@ _Docker Images_ used for this example:
 
 ## Requisites
 
+- Nslcd and nsswitch file configurated for host retrieving.
+- Own Certificates for CA and Server.
+
 ## Instalation
 ### Hostnames and our ips
 
