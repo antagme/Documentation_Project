@@ -68,7 +68,7 @@ tls_reqcert never</b>
 
 This file determines the order for retrieve information.
 
-- Without SSS
+1. Without SSS
 
 <pre><code>
 
@@ -103,6 +103,59 @@ aliases: files nisplus
 
 </code></pre>
 
-Always first files , or your system gonna be @#!·. the next entry will be read after read system files
+Always first files , or your system gonna be @#!·. the next entry will be read after read system files , in our case , ldap.
+So this will read **Passwd , shadow , group and hosts** entries from _system + ldap_ information.
+- `objectclass: posixAccount` is the entry for passwd retrieving.
+- `objectclass: posixGroup` is the entry for groups retrieving.
+- `objectclass: ipHost` is the entry for hosts retrieving.
 
+2. with SSS for Pam Auth 
+
+<pre><code>
+
+# /etc/nsswitch.conf
+#
+# An example Name Service Switch config file. This file should be
+# sorted with the most-used services at the beginning.
+# To use db, put the "db" in front of "files" for entries you want to be
+# looked up first in the databases
+
+
+passwd:     files <b> ldap sss </b>
+shadow:     files <b> ldap sss </b>
+group:      files <b> ldap sss </b>
+
+hosts:  files <b> ldap </b> dns myhostname
+bootparams: nisplus [NOTFOUND=return] files
+
+ethers:     files
+netmasks:   files
+networks:   files
+protocols:  files
+rpc:        files
+services:   files sss
+
+netgroup:   files sss
+
+publickey:  nisplus
+
+automount:  files sss
+aliases: files nisplus
+
+</code></pre>
+
+In this configuration , i add too sss entry for correct retrieve information from sssd.
+Note: _This only for my example 3 (sss kerberos pam auth)_
+
+
+## Starting nslcd service and check if this work properly.
+
+You just have to `/usr/sbin/nslcd` and check if the information is getting well.
+
+With the following commands:
+- `getent passwd` For user information check
+- `getent groups` For groups information check
+- `getent hosts` For hosts information check
+
+Note: _In my containers you only need to do_ `supervisocrtl restart nslcd` _for restart the service and get correct information_
 
