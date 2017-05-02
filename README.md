@@ -1,4 +1,4 @@
-# StartTLS LDAP Server With SASL GSSAPI Auth.
+# Example 1 - StartTLS LDAP Server With SASL GSSAPI Auth.
 
 ## Overview
 
@@ -16,6 +16,8 @@ _Docker Images_ used for this example:
 - Secure GSSAPI Authentification for LDAP client utilities
 - Secure connection between client and server using StarTLS
 - Fastest operations with LDAP Client Utilities
+
+## Requisites
 
 ## Instalation
 ### Hostnames and our ips
