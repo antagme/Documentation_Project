@@ -34,8 +34,7 @@ And you should have correct entries for Groups , Users and Hosts.
     dn: cn=1asix,ou=grups,dc=edt,dc=org
     cn: 1asix
     gidNumber: 610
-    description: Container per als grups de sistema linux
-    description: GRUPO CLASE 1 de asix
+    description: Grup 1 asix
     objectclass: top
     objectclass: posixGroup
     memberUid: user01
