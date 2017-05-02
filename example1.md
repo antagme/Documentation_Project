@@ -1,4 +1,4 @@
-# StartTLS LDAP Server With SASL GSSAPI Auth.
+# Example 1 - StartTLS LDAP Server With SASL GSSAPI Auth.
 
 ## Overview
 
@@ -14,8 +14,13 @@ _Docker Images_ used for this example:
 
 - Openldap Server for use to backup user information
 - Secure GSSAPI Authentification for LDAP client utilities
-- Secure connection between client and server using StartTLS
+- Secure connection between client and server using StarTLS
 - Fastest operations with LDAP Client Utilities
+
+## Requisites
+
+- [Nslcd and nsswitch file configurated for host retrieving](https://github.com/antagme/Documentation_Project/blob/master/HowToConfigureNslcdAndNssSwitch.md)
+- Own Certificates for CA and Server.
 
 ## Instalation
 ### Hostnames and our ips
@@ -29,13 +34,13 @@ Starting from the base that we already have an openldap server running without t
 
 To properly configure the servers and the client, we have to be careful in 3 essential things.
 
-- Communication through the 3 Containers is correct , including the ticket obtaining
+- Communication through the 3 Containers is correct , including the ticket obtaining.
 - Configure properly the slapd.conf file with SASL options.
 - Configure the client ldap.conf file for automatized SASL GSSAPI use
 
 In our case for this example we will use some docker containers that I created for the occasion.
 
-Note: My Containers can communicate between them , because i configurated ldap for do _ip resolution_ , if u don't using my containers , you should put all container entries in **/etc/hosts** for each container , like this.
+Note: My Containers can communicate between them , because i configurated ldap for do _ip resolution_ [Here](https://github.com/antagme/Documentation_Project/blob/master/HowToConfigureNslcdAndNssSwitch.md) , if u don't using my containers , you should put all container entries in **/etc/hosts** for each container , like this.
 
     172.18.0.2 ldap.edt.org
     172.18.0.3 kserver.edt.org
