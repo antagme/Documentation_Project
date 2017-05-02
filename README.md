@@ -19,7 +19,7 @@ _Docker Images_ used for this example:
 
 ## Requisites
 
-- Nslcd and nsswitch file configurated for host retrieving.
+- [Nslcd and nsswitch file configurated for host retrieving](https://github.com/antagme/Documentation_Project/blob/master/HowToConfigureNslcdAndNssSwitch.md)
 - Own Certificates for CA and Server.
 
 ## Instalation
@@ -40,7 +40,7 @@ To properly configure the servers and the client, we have to be careful in 3 ess
 
 In our case for this example we will use some docker containers that I created for the occasion.
 
-Note: My Containers can communicate between them , because i configurated ldap for do _ip resolution_ , if u don't using my containers , you should put all container entries in **/etc/hosts** for each container , like this.
+Note: My Containers can communicate between them , because i configurated ldap for do _ip resolution_ [Here](https://github.com/antagme/Documentation_Project/blob/master/HowToConfigureNslcdAndNssSwitch.md) , if u don't using my containers , you should put all container entries in **/etc/hosts** for each container , like this.
 
     172.18.0.2 ldap.edt.org
     172.18.0.3 kserver.edt.org
