@@ -14,7 +14,7 @@ _Docker Images_ used for this example:
 
 - Openldap Server for use to backup user information
 - Secure GSSAPI Authentification for LDAP client utilities
-- Secure connection between client and server using StarTLS
+- Secure connection between client and server using StartTLS
 - Fastest operations with LDAP Client Utilities
 
 ## Requisites
