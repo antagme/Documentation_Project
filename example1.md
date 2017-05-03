@@ -388,3 +388,10 @@ Now our commands will be shorter.
 | ------------- |:-------------:| -----:|
 | StartTLS Ldapsearch | `ldapsearch -h ldap.edt.org -Y GSSAPI  -b 'dc=edt,dc=org' -ZZ ` | `ldapsearch -ZZ `| 
 | StartTLS ldapwhoami | `ldapwhoami -h ldap.edt.org  -b 'dc=edt,dc=org' -Y GSSAPI -ZZ`  | `ldapwhoami -ZZ` |
+
+
+## Bibliography
+
+- [LDAP System Administration: Putting Directories to Work](https://books.google.es/books?id=utsMgEfnPSEC&pg=PT56&lpg=PT56&dq=%2B+sasl-secprops+noanonymous,noplain,noactive&source=bl&ots=LonrHJNZVc&sig=kL1iSuR3_4SyJYePIiiJHJ3S4Y8&hl=es&sa=X&ved=0ahUKEwiUoNPW787TAhXInRoKHTCmA7sQ6AEIMDAB#v=onepage&q=%2B%20sasl-secprops%20noanonymous%2Cnoplain%2Cnoactive&f=false)
+- [Official OpenLDAP Documentation of SASL Auth](http://www.openldap.org/doc/admin24/sasl.html)
+- [Mastering Ldap - Matt Butcher](https://www.packtpub.com/networking-and-servers/mastering-openldap-configuring-securing-and-integrating-directory-services)
