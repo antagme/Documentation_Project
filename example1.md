@@ -1,4 +1,4 @@
-# Example 1 - StartTLS LDAP Server With SASL GSSAPI Auth.
+# Example 1 - StartTLS LDAP Server With SASL GSSAPI Auth
 
 ## Overview
 
@@ -20,7 +20,7 @@ _Docker Images_ used for this example:
 ## Requisites
 
 - [Nslcd and nsswitch file configurated for host retrieving](https://github.com/antagme/Documentation_Project/blob/master/HowToConfigureNslcdAndNssSwitch.md)
-- Own Certificates for CA and Server.
+- Own Certificates for CA and Server with properly FQDN in Server Certificate.
 
 ## Instalation
 ### Hostnames and our ips
