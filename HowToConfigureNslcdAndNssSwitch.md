@@ -205,3 +205,7 @@ With the following commands:
 
 Note: _In my containers you only need to do_ `supervisocrtl restart nslcd` _for restart the service and get correct information_
 
+## Bibliography
+
+- [Official Documentation of the nss-pam-ldapd creator](https://arthurdejong.org/nss-pam-ldapd/setup)
+- [Serverfault entry](https://serverfault.com/questions/166981/how-to-configure-ldap-to-resolve-host-names)
