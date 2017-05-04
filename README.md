@@ -86,7 +86,7 @@ So we have the next _Dockers Images_ , each with differents configurations:
       * To Retrieve Grups.
       * To Retrieve Hosts.
   * [AuthTypes Working:](https://www.openldap.org/doc/admin24/sasl.html)
-     * [SASL GSSAPI(Kerberos Ticket Auth)](https://github.com/antagme/Documentation_Project/blob/master/example1.md)
+     * [SASL GSSAPI(Kerberos Ticket Auth)](https://github.com/antagme/Documentation_Project/blob/master/example1.md#configure)
   * [StartTLS Security Transport Layer](https://www.openldap.org/doc/admin24/tls.html)
   * Replication Consumer LDAP with StartTLS Communication And SASL GSSAPI.
 * [Docker](https://docs.docker.com/)
@@ -96,9 +96,8 @@ So we have the next _Dockers Images_ , each with differents configurations:
 * [Nslcd](https://arthurdejong.org/nss-pam-ldapd/)
     * [For retrieve Hosts Info](https://github.com/antagme/Documentation_Project/blob/master/HowToConfigureNslcdAndNssSwitch.md)
 * [Kerberos](https://web.mit.edu/kerberos/)
-  * For Obtain ticket
   * Do _Kerberos Auth_ with _SSSD_ 
-  * [_GSSAPI Auth_ with ldap clients]([https://github.com/antagme/Documentation_Project/blob/master/example1.md#configure)
+  * [_GSSAPI Auth_ with ldap clients](https://github.com/antagme/Documentation_Project/blob/master/example1.md#configure)
 * PAM
   * For the propertly _System-Auth_ With _Kerberos_ + _LDAP_
 * [Zabbix Agentd y Zabbix Server](http://www.zabbix.com/)
