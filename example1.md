@@ -12,7 +12,7 @@ _Docker Images_ used for this example:
 
 ### Fast Deployment
 
-I Made this example for show how to configure your _Ldap Server_ , anyway if you only want check how to it works , maybe be interesed in this another explanation.[Automated Build and How it Works](fakerino)
+I Made this example for show how to configure your _Ldap Server_ , anyway if you only want check how to it works , maybe be interesed in this another explanation.[Automated Build and How it Works](https://github.com/antagme/Documentation_Project/blob/master/example1fast.md)
 
 ## Features
 
