@@ -39,6 +39,8 @@ To properly configure the servers and the client, we have to be careful in 3 ess
 - Configure the client ldap.conf file for automatized SASL GSSAPI use
 
 In our case for this example we will use some docker containers that I created for the occasion.
+In these containers are already made the modifications, are just an example, you can do it on your own server
+If you dont want use my examples , go directly to [Configure](#configure).
 
 Note: My Containers can communicate between them , because i configurated ldap for do ip resolution [Here](https://github.com/antagme/Documentation_Project/blob/master/HowToConfigureNslcdAndNssSwitch.md) , if u don't using my containers , you should put all container entries in **/etc/hosts** for each container , like this.
 
@@ -75,6 +77,8 @@ These dockers containers are not interactive, to access you have to do the follo
 
     docker exec --interactive --tty [Docker Name] bash
     
+#### Automated Script
+If you preffer to use an Automated Builds , can take the script i created for this.[HERE](https://github.com/antagme/Documentation_Project/blob/master/AutomatedScript/start_example1.sh)
 
 ### Configure
 #### Kerberos Principals Creation
