@@ -145,7 +145,7 @@ Make the following order in the 3 containers to make sure everything will work.
     supervisorctl restart all
 
 This gonna restart all services on the container.
-Note:_for understand why and how i configure my supervisord_ , [click here](fake)
+Note:_for understand why and how i configure my supervisord_ , [click here](https://github.com/antagme/Documentation_Project/blob/master/HowToSupervisor.md)
 
 Now in the client container , we gonna try if we can obtain ticket of **user01**.
 
