@@ -27,7 +27,7 @@ We gonna configure this one for a Container , which needs the following services
 
 One important concept about Supervisor is the Service should be run in Foreground. So the Service need to have the option (No fork,Foreground...)
 
-Lets see the file, i comment all the importants parts
+Lets see the file, i comment all the importants parts , in my case the name is supervisord.ini
 
 ```INI
 # select if u want supervisord run as Daemon or not
@@ -36,7 +36,7 @@ nodaemon=true
 
 # This configure the unix socket for enable supervisorctl command
 # The purpose is control the services individualy or  all of them with a simple command.
-# Syntax: supervisorctl start/restart/stop Service name(program:xxxx)/all
+# Syntax: supervisorctl start/restart/stop/status Service name(program:xxxx)/all
 [unix_http_server]
 file=/var/run/supervisor/supervisor.sock   ; (the path to the socket file)
 chmod=0700                       ; socket file mode (default 0700)
@@ -99,6 +99,24 @@ stdout_logfile=/var/log/supervisor/slapd.log
 stderr_logfile=/var/log/supervisor/slapd.log
 ```
 
+When you finish to set up your file , now is time to try it.
+My recommendation is run supervisord with specified file in the command , although surely works too if the file is in the correct directory.
+My file path is `/etc/supervisord.d/supervisord.ini` so i gonna start supervisor.
 
+    /usr/bin/supervisord --configuration=/etc/supervisord.d/supervisord.ini
+
+Now have different ways to check if this work properly.
+
+- `ps ax` and check if the services are running.
+- `supervisorctl status all` and check if this running.
+- Open your browser and try to connect to http server , in my case http://localhost:9001
+
+For more information about supervisor check the [Official Documentation](http://supervisord.org/)
+
+## Bibliography
+
+- [Official Supervisor Documentation](http://supervisord.org/)
+- [Docker Documentation abour run multiples services in a docker](https://docs.docker.com/engine/admin/multi-service_container/)
+- [Sample file of Supervisor](https://github.com/Supervisor/supervisor/blob/master/supervisor/skel/sample.conf)
 
 
