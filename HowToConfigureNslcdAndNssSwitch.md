@@ -12,7 +12,7 @@ This will provide you some new files [/etc/nslcd.conf](https://raw.githubusercon
 
 And you should have correct entries for Groups , Users and Hosts.
 
-### Openldap Example Entry for User.
+### Openldap Example Entry for User
 
     dn: cn=user01,ou=usuaris,dc=edt,dc=org
     objectclass: posixAccount
@@ -29,7 +29,7 @@ And you should have correct entries for Groups , Users and Hosts.
     gidNumber: 610
     homeDirectory: /var/tmp/home/1asix/user01
 
-### Openldap Example Entry for Group.
+### Openldap Example Entry for Group
 
     dn: cn=1asix,ou=grups,dc=edt,dc=org
     cn: 1asix
@@ -43,7 +43,7 @@ And you should have correct entries for Groups , Users and Hosts.
     memberUid: user04
     memberUid: user05
 
-### Openldap Example Entry for Host.
+### Openldap Example Entry for Host
 
     # pc1, hosts, edt.org
     dn: cn=pc1,ou=hosts,dc=edt,dc=org
@@ -56,7 +56,7 @@ And you should have correct entries for Groups , Users and Hosts.
     macAddress: 02:42:3a:be:ac:52
     description: Ordinador aula
 
-## Configuring nslcd daemon for retrieve information.
+## Configuring nslcd daemon for retrieve information
 
 Finished the packet installing , you have to configure the 2 new files.
 
@@ -194,7 +194,7 @@ In this configuration , i add too sss entry for correct retrieve information fro
 Note: _This only for my example 3 (sss kerberos pam auth)_
 
 
-## Starting nslcd service and check if this work properly.
+## Starting nslcd service and check if this work properly
 
 You just have to `/usr/sbin/nslcd` and check if the information is getting well.
 
