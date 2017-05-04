@@ -8,7 +8,7 @@ All communication between the client and the _LDAP SERVER_ is encrypted using th
 ## Requisites
 
 - Docker Engine working on the system
-- run this with user with permisions
+- Run this with user with permisions
 
 Note:_This Script only tested in fedora 24_
 
