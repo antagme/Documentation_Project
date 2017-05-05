@@ -51,6 +51,7 @@ Starting from the base that we already have an openldap server running without t
 To properly configure the servers and the client, we have to be careful in 3 essential things.
 
 - Need to have working the GSSAPI Auth On Ldap Producer and GSSAPI Replica , if you dont have it please see [Example 1](https://github.com/antagme/Documentation_Project/blob/master/example1.md)
+- Correct configuration of slapd.conf for authorize Replication
 - Communication between the Ldap Producer and GSSAPI Replica is correct
 - Change the ACL on Ldap Producer For Simple Replica and check if the Communication between Producer and Simple Replica is correct
 
@@ -108,3 +109,86 @@ These dockers containers are not interactive, to access you have to do the follo
     
 #### Automated Script
 If you preffer to use an Automated Builds , can take the script i created for this.[HERE](https://github.com/antagme/Documentation_Project/blob/master/AutomatedScript/start_example2.sh)
+
+## Configure
+### Configure our Ldap Server as Producer
+
+We have 2 importants parts in the configuration of our slapd.conf to realize Producer work.
+Lets see  my file [slapd.conf](https://raw.githubusercontent.com/antagme/ldap_producer/master/files/slapd.external.conf)
+
+<pre><code>
+#
+# See slapd.conf(5) for details on configuration options.
+# This file should NOT be world readable.
+#
+
+include         /etc/openldap/schema/corba.schema
+include         /etc/openldap/schema/core.schema
+include         /etc/openldap/schema/cosine.schema
+include         /etc/openldap/schema/duaconf.schema
+include         /etc/openldap/schema/dyngroup.schema
+include         /etc/openldap/schema/inetorgperson.schema
+include         /etc/openldap/schema/java.schema
+include         /etc/openldap/schema/misc.schema
+include         /etc/openldap/schema/nis.schema
+include         /etc/openldap/schema/openldap.schema
+include         /etc/openldap/schema/ppolicy.schema
+include         /etc/openldap/schema/collective.schema
+
+# Allow LDAPv2 client connections.  This is NOT the default.
+allow bind_v2
+
+pidfile         /var/run/openldap/slapd.pid
+#argsfile       /var/run/openldap/slapd.args
+
+# Limit SASL options to only GSSAPI and not other client-favorites. Apparently there is an issue where
+# clients will default to non-working SASL mechanisms and will make you angry.
+sasl-secprops noanonymous,noplain,noactive
+
+# SASL connection information. The realm should be your Kerberos realm as configured for the system. The
+# host should be the LEGITIMATE hostname of this server
+sasl-realm EDT.ORG
+sasl-host ldap.edt.org
+
+# Rewrite certain SASL bind DNs to more readable ones. Otherwise you bind as some crazy default
+# that ends up in a different base than your actual one. This uses regex to rewrite that weird
+# DN and make it become one that you can put within your suffix.
+authz-policy from
+authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" "cn=Manager,dc=edt,dc=org"
+authz-regexp "^uid=([^,]+),cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=usuaris,dc=edt,dc=org"
+
+# ------------------------------------------------------------------------------------------------------------
+# SSL certificate file paths
+TLSCACertificateFile /etc/ssl/certs/cacert.pem
+TLSCertificateFile /etc/openldap/certs/ldapcert.pem
+TLSCertificateKeyFile /etc/openldap/certs/ldapserver.pem
+TLSCipherSuite HIGH:MEDIUM:+SSLv2
+TLSVerifyClient allow
+# -----------------------------------------------
+<b>
+modulepath  /usr/lib64/openldap
+moduleload  syncprov.la
+loglevel    sync stats
+</b>
+
+# -----------------------------------------------
+
+database hdb
+suffix "dc=edt,dc=org"
+rootdn "cn=Manager,dc=edt,dc=org"
+rootpw {SASL}admin/admin@EDT.ORG
+directory /var/lib/ldap
+index objectClass,cn,memberUid,gidNumber,uidNumber,uid eq,pres
+overlay syncprov
+syncprov-checkpoint 1000 60
+
+access to attrs=userPassword
+  by self write
+  by dn.exact="cn=Replication,dc=edt,dc=org" read
+  by anonymous auth
+  by * none
+
+access to *
+  by peername.ip=172.18.0.0%255.255.0.0 read
+  by * read break
+</code></pre>  
