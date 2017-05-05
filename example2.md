@@ -10,9 +10,9 @@ On the other hand we will make another _Consumer_ do the same but through _SASL 
 Finally we will verify that the **Client** can perform searches in both servers, and we will make modifications in the database of the _Producer_ and we will verify if it is really producing a correct replication.
 
 _Docker Images_ used for this example:
-- (Ldap StartTLS Producer + GSSAPI Keytab)[https://hub.docker.com/r/antagme/ldap_producer/]
-- (Kerberos)[https://hub.docker.com/r/antagme/kerberos/]
-- (Client for try some consults to Database)[https://hub.docker.com/r/antagme/client_gssapi/)
+- [Ldap StartTLS Producer + GSSAPI Keytab](https://hub.docker.com/r/antagme/ldap_producer/)
+- [Kerberos](https://hub.docker.com/r/antagme/kerberos/)
+- [Client for try some consults to Database](https://hub.docker.com/r/antagme/client_gssapi/)
 - [Ldap StartTLS Consumer with Simple Authentication](https://hub.docker.com/r/antagme/ldap_replica_simple/)
 - [Ldap StartTLS Consumer with SASL GSSAPI Authentication](https://hub.docker.com/r/antagme/ldap_replica_gssapi/)
 
