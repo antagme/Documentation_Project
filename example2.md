@@ -113,7 +113,11 @@ If you preffer to use an Automated Builds , can take the script i created for th
 ## Configure
 ### Configure our Ldap Server as Producer
 
-We have 2 importants parts in the configuration of our slapd.conf to realize Producer work.
+We have 3 importants parts in the configuration of our slapd.conf to realize Producer work.
+- Enable Syncprov Module
+- Configure the Backend for enable syncprov
+- Modify ACL and create DN for Consumer Simple Replication
+
 Lets see  my file [slapd.conf](https://raw.githubusercontent.com/antagme/ldap_producer/master/files/slapd.external.conf)
 
 <pre><code>
@@ -179,12 +183,12 @@ rootdn "cn=Manager,dc=edt,dc=org"
 rootpw {SASL}admin/admin@EDT.ORG
 directory /var/lib/ldap
 index objectClass,cn,memberUid,gidNumber,uidNumber,uid eq,pres
-overlay syncprov
+<b>overlay syncprov
 syncprov-checkpoint 1000 60
-
+</b>
 access to attrs=userPassword
   by self write
-  by dn.exact="cn=Replication,dc=edt,dc=org" read
+ <b> by dn.exact="cn=Replication,dc=edt,dc=org" read </b>
   by anonymous auth
   by * none
 
@@ -192,5 +196,24 @@ access to *
   by peername.ip=172.18.0.0%255.255.0.0 read
   by * read break
 </code></pre>  
+
+#### Enable Syncprov Module
+
+In this line need to specify Module Directory Path , the name of the module and loglevel of this:
+
+    modulepath  /usr/lib64/openldap
+    moduleload  syncprov.la
+    loglevel    sync stats
+
+#### Configure the Backend for enable syncprov
+
+In the Backend configuration , you should specify to enable Replication in available on this.
+
+    overlay syncprov
+    syncprov-checkpoint 1000 60
+
+#### Create a User DN and Modify ACL for Consumer Simple Replication
+
+We need to have an entry
 
 _UNDER CONSTRUCTION_
