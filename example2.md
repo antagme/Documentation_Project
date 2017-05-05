@@ -93,7 +93,7 @@ In the default Bridge Network , we can't assign ips for containers_
  # docker run --name client --hostname client.edt.org --net ldap --ip 172.18.0.8 --detach antagme/client_gssapi
  ```
 
-#### Run Docker Replica Simple   
+#### Run Docker Replica Gssapi   
  ```bash
  # docker run --name ldap_replica_gssapi --hostname ldaprepl.edt.org --net ldap --ip 172.18.0.4 --detach antagme/ldap_replica_gssapi
  ```
