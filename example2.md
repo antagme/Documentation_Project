@@ -236,6 +236,152 @@ With this we have 1 entry for replication simple.
 
 Finally we gonna put the new slapd.conf file. First stop slapd service if its running , in my case `supervisorctl stop slapd`.
 
+Now , in my case , gonna change our slapd.conf and i prepared an script for this. `bash /scripts/startup-slapd.sh` . When finish , you should put on the service `supervisorctl start slapd`. 
+
+We have Working slapd producer server with posibilities of replication.
+
+### Ldap Consumer server through GSSAPI Authentification.
+
+With all configurated , we gonna try how works the replication of _Ldap_ server through _GSSAPI Authentification_ , its more secure because the password not needs to be write in configuration file.
+
+Firstly we need The Producer server working , the next step is to set up the slapd.conf of our_ GSSAPI Consumer_.
+
+Lets see my file:
+
+<pre><code>
+#
+# See slapd.conf(5) for details on configuration options.
+# This file should NOT be world readable.
+#
+
+include		/etc/openldap/schema/corba.schema
+include		/etc/openldap/schema/core.schema
+include		/etc/openldap/schema/cosine.schema
+include		/etc/openldap/schema/duaconf.schema
+include		/etc/openldap/schema/dyngroup.schema
+include		/etc/openldap/schema/inetorgperson.schema
+include		/etc/openldap/schema/java.schema
+include		/etc/openldap/schema/misc.schema
+include		/etc/openldap/schema/nis.schema
+include		/etc/openldap/schema/openldap.schema
+include		/etc/openldap/schema/ppolicy.schema
+include		/etc/openldap/schema/collective.schema
+
+# Allow LDAPv2 client connections.  This is NOT the default.
+allow bind_v2
+
+pidfile		/var/run/openldap/slapd.pid
+#argsfile	/var/run/openldap/slapd.args
+
+# Limit SASL options to only GSSAPI and not other client-favorites. Apparently there is an issue where
+# clients will default to non-working SASL mechanisms and will make you angry.
+sasl-secprops noanonymous,noplain,noactive
+
+# SASL connection information. The realm should be your Kerberos realm as configured for the system. The
+# host should be the LEGITIMATE hostname of this server
+<b>
+sasl-realm EDT.ORG
+sasl-host ldaprepl.edt.org
+# Rewrite certain SASL bind DNs to more readable ones. Otherwise you bind as some crazy default
+# that ends up in a different base than your actual one. This uses regex to rewrite that weird
+# DN and make it become one that you can put within your suffix.
+authz-policy from
+authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" "cn=Manager,dc=edt,dc=org"
+authz-regexp "^uid=([^,]+),cn=edt\.org,cn=gssapi,cn=auth" "cn=$1,ou=usuaris,dc=edt,dc=org"
+</b>
+# SSL certificate file paths
+TLSCACertificateFile /etc/ssl/certs/cacert.pem
+TLSCertificateFile /etc/openldap/certs/ldapcert.pem
+TLSCertificateKeyFile /etc/openldap/certs/ldapserver.pem
+TLSCipherSuite HIGH:MEDIUM:+SSLv2
+# -----------------------------
+<b>
+modulepath  /usr/lib64/openldap
+moduleload  syncprov.la 
+loglevel    sync stats
+</b>
+
+# -----------------------------------------------
+<b>
+database hdb
+suffix "dc=edt,dc=org"
+rootdn "cn=Manager,dc=edt,dc=org"
+rootpw {SASL}admin/admin@EDT.ORG
+directory /var/lib/ldap
+index objectClass eq,pres
+syncrepl rid=000 
+  provider=ldap://ldap.edt.org
+  type=refreshAndPersist
+  retry="5 5 300 +" 
+  searchbase="dc=edt,dc=org"
+  attrs="*,+"
+  starttls=yes
+  bindmethod=sasl
+  binddn="cn=Manager,dc=edt,dc=org"
+  credentials={SASL}admin/admin@EDT.ORG
+updateref ldap://ldap.edt.org
+</b>
+#---------------------------------ACL-----
+access to attrs=userPassword
+  by anonymous auth
+  by self write
+  
+access to * 
+  by peername.ip=172.18.0.0%255.255.0.0 read
+  by dn.exact="cn=replication,dc=edt,dc=org" read
+  by * read break
+
+# ------------------------------------------------
+</code></pre>
+
+#### Enabling GSSAPI server and REALM
+
+Like the _Producer_ we need to configure our server for enable GSSAPI Authentification , so if you dont know how it works , please see [Example 1](https://github.com/antagme/Documentation_Project/blob/master/example1.md)
+
+_Note:the Host should be the FQDN of Consumer GSSAPI Server_
+
+#### Enable Syncprov Module
+
+In this line need to specify Module Directory Path , the name of the module and loglevel of this:
+
+    modulepath  /usr/lib64/openldap
+    moduleload  syncprov.la
+    loglevel    sync stats
+
+#### Configure the Backend with Producer information
+
+We will focus on the key points to configure the consumer and enable communication between the producer and the GSSAPI, for more information on the configuration of the module Syncrepl look at the [official documentation](http://www.openldap.org/doc/admin24/slapdconfig.html#syncrepl)
+
+_Note: If you have 2 or more servers , the `syncrepl rid=000` camp should be different number from the others_
+
+- We enable StartTLS communication: `starttls=yes`
+- The bindmethod is SASL for GSSAPI: `bindmethod=sasl`
+- I configure the consumer to retrieve information of the Producer through GSSAPI , so we need to put entry like this. 
+
+         binddn="cn=Manager,dc=edt,dc=org"
+         credentials={SASL}admin/admin@EDT.ORG
+
+With this configuracion , you need to put this slapd.conf in the server , like the previous configuration. In my case `bash /scripts/startup-slapd.sh`
+
+#### Starting the Replication
+
+In this moment , we have stopped _Slapd_ Service and if you perform this order `slapcat` will comprove that the database is empty.Also if you check the content of the _backend_ directory you will see this empty , in our case `ls -l /var/lib/ldap`.
+
+Now need **admin** ticket for get all the entries of the Producer , we obtain with `kinit admin/admin` and the password admin.
+
+Check if the ticket was obtained properly with `klist`.
+
+Now only need to start the server , in my case with `supervisorctl start slapd`.
+
+Wait few secs and try to perform `slapcat` and `ls -l /var/lib/ldap` and check if the information was changed.
+
+Now we have an GSSAPI Consumer , with a client perform some searchs to the server to check it working properly
+
+Note:_ You can delete the ticket and it gonna replicate anyway , but i recommend still with ticket for more security_
+
+### Ldap Consumer server through Simple Authentification.
+
+According our configuration , we create a new DN entry for perform this Replication.
 
 
 
