@@ -214,6 +214,29 @@ In the Backend configuration , you should specify to enable Replication in avail
 
 #### Create a User DN and Modify ACL for Consumer Simple Replication
 
-We need to have an entry
+We need to have an entry in our Ldap Tree for Secure retrieve of sensible data. We gonna create "cn=Replication,dc=edt,dc=org".
+Note:_Never put here Manager Account of Ldap , its so dangerous , always create a new DN_
+
+Create a file with this, my file name will be replicate.ldif
+
+    dn: cn=replication,dc=edt,dc=org
+    objectClass: top
+    objectClass: person
+    objectClass: organizationalPerson
+    cn: replication
+    sn: replication
+    userPassword: {SSHA}5DfZc1WXeIwrP7C3fr23WLZiPZ5YHMgA
+
+Our New DN Password is **jupiter** , if you have LDAP Gssapi like me , add this entry is so simple.
+
+- Get _Admin Ticket_: `kinit admin/admin` (our password is admin)
+- Insert the file: `ldapadd -f replicate.ldif`
+
+With this we have 1 entry for replication simple.
+
+Finally we gonna put the new slapd.conf file. First stop slapd service if its running , in my case `supervisorctl stop slapd`.
+
+
+
 
 _UNDER CONSTRUCTION_
