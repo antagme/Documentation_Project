@@ -481,6 +481,17 @@ Now only need to start the server , in my case with `supervisorctl start slapd`.
 
 Wait few secs and try to perform `slapcat` and `ls -l /var/lib/ldap` and check if the information was changed.
 
+### Trying if the the _Replication_ is doing well
+
+Inside _Producer_  , having all the insfraestructure working , we gonna do some changes in Producer and see if it appear in the Consumers.
+
+I preparated a [file](https://raw.githubusercontent.com/antagme/Documentation_Project/master/AutomatedScript/add_entry.ldif) for this , this one have 2 entries for add new.
+
+Now in _Producer_ Server , we gonna insert into the backend and lets see if the changes, for this , follow this steps.
+
+- Get Admin ticket in Producer server. Note: _Password is admin_
+     `kinit admin/admin` 
+- Get 
 
 
 _UNDER CONSTRUCTION_
