@@ -51,7 +51,8 @@ Now try some Ldapsearch querys.
     
 ## More information
 
-If you preffer long explanation , you have [How to configure for perform SASL GSSAPI](https://github.com/antagme/Documentation_Project/blob/master/example1.md)
+[root@client /]# ldapsearch -h 172.18.0.5 -x -D 'cn=Manager,dc=edt,dc=org' -w jupitor
+If you preffer long explanation , you have [How to configure for perform Replication](https://github.com/antagme/Documentation_Project/blob/master/example2.md)
 
 ```INI
 ## Script Code
