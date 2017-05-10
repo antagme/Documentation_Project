@@ -39,12 +39,12 @@ docker rm $CONTAINER_REPLICA_SIMPLE &>> $LOG_FILE
 docker rm $CONTAINER_REPLICA_GSSAPI &>> $LOG_FILE
 
 # Remove Images of all Containers?
-#echo " REMOVING IMAGES"
-#docker rmi $IMAGE_LDAP  &>> $LOG_FILE
-#docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
-#docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
-#docker rmi $IMAGE_REPLICA_SIMPLE  &>> $LOG_FILE
-#docker rmi $IMAGE_REPLICA_GSSAPI  &>> $LOG_FILE
+echo " REMOVING IMAGES"
+docker rmi $IMAGE_LDAP  &>> $LOG_FILE
+docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
+docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
+docker rmi $IMAGE_REPLICA_SIMPLE  &>> $LOG_FILE
+docker rmi $IMAGE_REPLICA_GSSAPI  &>> $LOG_FILE
 
 #REMOVE IF EXISTS 
 echo " Deleting Network"
