@@ -91,7 +91,12 @@ docker run --name $CONTAINER_REPLICA_SIMPLE \
 	--hostname ldaprepl2.edt.org --net $DOCKER_NETWORK \
 	--ip 172.18.0.5  --detach  $IMAGE_REPLICA_SIMPLE &>> $LOG_FILE \
 	&& echo " Ldap Replica Simple Container Created ... %100 Completed"
-			
+
+## Starting Slapd Replica GSSAPI
+docker exec --interactive --tty ldap_replica_gssapi bash -c "echo admin | kinit admin/admin && supervisorctl start slapd"
+
+## Starting Slapd Replica Simple
+docker exec --interactive --tty ldap_replica_simple bash -c "supervisorctl start slapd"
+
 echo -e " Thanks For the Wait"'!!!'" \n For Access inside Container \
 	\n docker exec --interactive --tty [Container Name] bash "
-
