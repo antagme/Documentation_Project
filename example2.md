@@ -381,7 +381,105 @@ Note:_ You can delete the ticket and it gonna replicate anyway , but i recommend
 
 ### Ldap Consumer server through Simple Authentification.
 
-According our configuration , we create a new DN entry for perform this Replication.
+According our configuration , we created a new DN entry for perform this Replication.
+
+Lets see the slapd.conf of this configuration.
+
+<pre><code>
+
+#
+# See slapd.conf(5) for details on configuration options.
+# This file should NOT be world readable.
+#
+
+include		/etc/openldap/schema/corba.schema
+include		/etc/openldap/schema/core.schema
+include		/etc/openldap/schema/cosine.schema
+include		/etc/openldap/schema/duaconf.schema
+include		/etc/openldap/schema/dyngroup.schema
+include		/etc/openldap/schema/inetorgperson.schema
+include		/etc/openldap/schema/java.schema
+include		/etc/openldap/schema/misc.schema
+include		/etc/openldap/schema/nis.schema
+include		/etc/openldap/schema/openldap.schema
+include		/etc/openldap/schema/ppolicy.schema
+include		/etc/openldap/schema/collective.schema
+
+# Allow LDAPv2 client connections.  This is NOT the default.
+allow bind_v2
+
+pidfile		/var/run/openldap/slapd.pid
+#argsfile	/var/run/openldap/slapd.args
+
+# SSL certificate file paths
+TLSCACertificateFile /etc/ssl/certs/cacert.pem
+TLSCertificateFile /etc/openldap/certs/ldapcert.pem
+TLSCertificateKeyFile /etc/openldap/certs/ldapserver.pem
+TLSCipherSuite HIGH:MEDIUM:+SSLv2
+# -----------------------------
+<b>
+modulepath  /usr/lib64/openldap
+moduleload  syncprov.la 
+loglevel    sync stats
+</b>
+
+# -----------------------------------------------
+
+database hdb
+suffix "dc=edt,dc=org"
+rootdn "cn=Manager,dc=edt,dc=org"
+rootpw jupitor
+directory /var/lib/ldap
+index objectClass eq,pres
+<b>
+syncrepl rid=001 
+  provider=ldap://ldap.edt.org
+  type=refreshAndPersist
+  retry="5 5 300 +" 
+  searchbase="dc=edt,dc=org"
+  attrs="*,+"
+  starttls=yes
+  bindmethod=simple
+  binddn="cn=Replication,dc=edt,dc=org"
+  credentials=jupiter
+updateref ldap://ldap.edt.org
+</b>
+#---------------------------------ACL-----
+access to attrs=userPassword
+  by anonymous auth
+  by self write
+  
+access to * 
+  by peername.ip=172.18.0.0%255.255.0.0 read
+  by * read break
+  
+</code></pre>
+
+#### Configure Backend for Simple Authentification Consumer
+
+Is similar to GSSAPI Configuration , we should enable syncprov module , but the important part is the syncrepl configuration part.
+
+We need to put a **different** rid to the other server , in our case 001.
+
+    syncrepl rid=001 
+
+Now we need to specify how will be the connection.
+
+      bindmethod=simple
+      binddn="cn=Replication,dc=edt,dc=org"
+      credentials=jupiter
+
+The bindmethod will be _simple_ , so we need to specify an _bindn_ to perform the connection to _LDAP Producer_ and retrieve the data.
+For this reason we created a new entry , in our case _cn=Replication,dc=edt,dc=org_ who have permision for see all the database.
+Note:_Credentials is the password of this entry_
+
+#### Starting the Replication
+
+In this moment , we have stopped _Slapd_ Service and if you perform this order `slapcat` will comprove that the database is empty.Also if you check the content of the _backend_ directory you will see this empty , in our case `ls -l /var/lib/ldap`.
+
+Now only need to start the server , in my case with `supervisorctl start slapd`.
+
+Wait few secs and try to perform `slapcat` and `ls -l /var/lib/ldap` and check if the information was changed.
 
 
 
