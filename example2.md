@@ -488,10 +488,16 @@ Inside _Producer_  , having all the insfraestructure working , we gonna do some 
 I preparated a [file](https://raw.githubusercontent.com/antagme/Documentation_Project/master/AutomatedScript/add_entry.ldif) for this , this one have 2 entries for add new.
 
 Now in _Producer_ Server , we gonna insert into the backend and lets see if the changes, for this , follow this steps.
+Note:_You should started slapd in all consumers before this._
 
-- Get Admin ticket in Producer server. Note: _Password is admin_
-     `kinit admin/admin` 
-- Get 
+- Get Admin ticket in Producer server.`kinit admin/admin`  Note: _Password is admin_
+- Insert the new ldif file. `ldapadd -f add_entry.ldif`
+- See if the replication done properly in Consumers. Note:_Important see if the userPassword entry is visible , if this correct , you success in your replication.
 
 
-_UNDER CONSTRUCTION_
+## Bibliography
+
+- [Official OpenLDAP Documentation of Syncrepl Configuration](http://www.openldap.org/doc/admin24/replication.html#Syncrepl)
+- [Mastering Ldap - Matt Butcher](https://www.packtpub.com/networking-and-servers/mastering-openldap-configuring-securing-and-integrating-directory-services)
+
+
