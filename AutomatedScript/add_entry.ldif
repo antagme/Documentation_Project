@@ -1,0 +1,31 @@
+dn: cn=user11,ou=usuaris,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user11
+cn: alumne11 de 2asix de todos los santos
+sn: alumne11
+homephone: 555-222-0016
+mail: user11@edt.org
+description: alumne de 2asix
+ou: 2asix
+uid: user11
+uidNumber: 7015
+gidNumber: 611
+homeDirectory: /var/tmp/home/2asix/user11
+userPassword: {SHA}ovf8ta/reYP/u2zj0afpHt8yE1A=
+
+dn: cn=gandhi,ou=usuaris,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: gandhi
+cn: gandhi de 2asix de todos los santos
+sn: gandhi
+homephone: 555-222-0016
+mail: gandhi@edt.org
+description: alumne de 2asix
+ou: 2asix
+uid: gandhi
+uidNumber: 7069
+gidNumber: 611
+homeDirectory: /var/tmp/home/2asix/gandhi
+userPassword: {SHA}ovf8ta/reYP/u2zj0afpHt8yE1A=
