@@ -1,4 +1,4 @@
-# Example 1 - StartTLS LDAP Server With SASL GSSAPI Auth
+# Example 1 FAST - StartTLS LDAP Server With SASL GSSAPI Auth
 
 ## Overview
 
