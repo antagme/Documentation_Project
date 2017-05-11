@@ -33,34 +33,24 @@ We gonna try some search querys with Client , you need enter into the _Client Co
 Time to try how works.
 First we perform searchs on the Replica Servers.
 
-    ldapsearch -h ldaprepl.edt.org -x
-    ldapsearch -h ldaprepl2.edt.org -x
+    ldapsearch -h ldaprepl.edt.org -x -ZZ
+    ldapsearch -h ldaprepl2.edt.org -x -ZZ
 
 Is the same information , now we gonna put some new information in _Producer_ and check if the information was updated in the Replicas
 
-    docker exec --interactive --tty ldap bash -c "echo admin | kinit admin/admin && ldapadd -f /opt/docker/add_entry.ldif"
+    docker exec --interactive --tty ldap bash -c "echo admin | kinit admin/admin && ldapadd -ZZ -f /opt/docker/add_entry.ldif"
 
 
 Now try again to perform searchs in replica
 
-    ldapsearch -h ldaprepl.edt.org -x
-    ldapsearch -h ldaprepl2.edt.org -x
+    ldapsearch -h ldaprepl.edt.org -x -ZZ
+    ldapsearch -h ldaprepl2.edt.org -x -ZZ
 
-Check if ldap transform properly the ticket.
-
-    ldapwhoami -ZZ
+Now we have the information updated in the Replica Servers! You can use this for balance traffic or only for do _Backups_.
     
-Now try some Ldapsearch querys.
-
-    ldapsearch -ZZ cn=user01
-    
-## More information
-
-[root@client /]# ldapsearch -h 172.18.0.5 -x -D 'cn=Manager,dc=edt,dc=org' -w jupitor
 If you preffer long explanation , you have [How to configure for perform Replication](https://github.com/antagme/Documentation_Project/blob/master/example2.md)
 
 ```INI
-## Script Code
 #!/bin/bash
 # Author: Pedro Romero Aguado
 # Date: 04/05/2017
@@ -102,12 +92,12 @@ docker rm $CONTAINER_REPLICA_SIMPLE &>> $LOG_FILE
 docker rm $CONTAINER_REPLICA_GSSAPI &>> $LOG_FILE
 
 # Remove Images of all Containers?
-#echo " REMOVING IMAGES"
-#docker rmi $IMAGE_LDAP  &>> $LOG_FILE
-#docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
-#docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
-#docker rmi $IMAGE_REPLICA_SIMPLE  &>> $LOG_FILE
-#docker rmi $IMAGE_REPLICA_GSSAPI  &>> $LOG_FILE
+echo " REMOVING IMAGES"
+docker rmi $IMAGE_LDAP  &>> $LOG_FILE
+docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
+docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
+docker rmi $IMAGE_REPLICA_SIMPLE  &>> $LOG_FILE
+docker rmi $IMAGE_REPLICA_GSSAPI  &>> $LOG_FILE
 
 #REMOVE IF EXISTS 
 echo " Deleting Network"
@@ -154,7 +144,13 @@ docker run --name $CONTAINER_REPLICA_SIMPLE \
 	--hostname ldaprepl2.edt.org --net $DOCKER_NETWORK \
 	--ip 172.18.0.5  --detach  $IMAGE_REPLICA_SIMPLE &>> $LOG_FILE \
 	&& echo " Ldap Replica Simple Container Created ... %100 Completed"
-			
+
+## Starting Slapd Replica GSSAPI
+docker exec --interactive --tty ldap_replica_gssapi bash -c "echo admin | kinit admin/admin && supervisorctl start slapd"
+
+## Starting Slapd Replica Simple
+docker exec --interactive --tty ldap_replica_simple bash -c "supervisorctl start slapd"
+
 echo -e " Thanks For the Wait"'!!!'" \n For Access inside Container \
 	\n docker exec --interactive --tty [Container Name] bash "
 
