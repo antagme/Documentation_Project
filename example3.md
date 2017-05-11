@@ -41,9 +41,10 @@ Starting from the base that we already have an openldap server running without t
 
 To properly configure the servers and the client, we have to be careful in 3 essential things.
 
-- Communication through the 3 Containers is correct , including the ticket obtaining.
-- Configure properly the slapd.conf file with SASL options.
-- Configure the client ldap.conf file for automatized SASL GSSAPI use
+- Configure sssd service for _Kerberos Auth_ , _Take information from LDAP_, and _finally use kerberos password instead ldap_
+- Configure auth-config for enable sssd Service
+- Check if Pam is properly configured
+- Try
 
 In our case for this example we will use some docker containers that I created for the occasion.
 In these containers are already made the modifications, are just an example, you can do it on your own server
