@@ -41,6 +41,7 @@ Starting from the base that we already have an openldap server running without t
 
 To properly configure the servers and the client, we have to be careful in 3 essential things.
 
+- Need to have working the GSSAPI Auth On _LDAP Server_ , if you dont have it please see [Example 1](https://github.com/antagme/Documentation_Project/blob/master/example1.md)
 - Configure sssd service for _Kerberos Auth_ , _Take information from LDAP_, and _finally use kerberos password instead ldap_
 - Configure auth-config for enable sssd Service
 - Check if Pam is properly configured
