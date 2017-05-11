@@ -22,6 +22,7 @@ I Made this example for show how to configure your _Ldap Server_ , anyway if you
 - Secure GSSAPI Authentification for LDAP client utilities
 - Secure connection between client and server using StartTLS
 - Fastest operations with LDAP Client Utilities
+- Secure authentification through Kerberos
 
 ## Requisites
 
@@ -66,7 +67,7 @@ In the default Bridge Network , we can't assign ips for containers_
  
 #### Run Docker LDAP
  ```bash
- # docker run --name ldap --hostname ldap.edt.org --net ldap --ip 172.18.0.2  --detach antagme/ldap_gssapi
+ # docker run --name ldap --hostname ldap.edt.org --net ldap --ip 172.18.0.2  --detach antagme/ldap_sssd
  ```  
 
 #### Run Docker Kerberos (TGT)  
@@ -76,7 +77,7 @@ In the default Bridge Network , we can't assign ips for containers_
  
 #### Run Docker Client   
  ```bash
- # docker run --name client --hostname client.edt.org --net ldap --ip 172.18.0.8 --detach antagme/client_gssapi
+ # docker run --name client --hostname client.edt.org --net ldap --ip 172.18.0.8 --detach antagme/client:pam_tls
  ```
 
 These dockers containers are not interactive, to access you have to do the following order:
@@ -84,7 +85,7 @@ These dockers containers are not interactive, to access you have to do the follo
     docker exec --interactive --tty [Docker Name] bash
     
 #### Automated Script
-If you preffer to use an Automated Builds , can take the script i created for this.[HERE](https://github.com/antagme/Documentation_Project/blob/master/AutomatedScript/start_example1.sh)
+If you preffer to use an Automated Builds , can take the script i created for this.[HERE](https://github.com/antagme/Documentation_Project/blob/master/AutomatedScript/start_example3.sh)
 
 ### Configure
 #### Kerberos Principals Creation
