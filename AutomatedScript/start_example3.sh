@@ -5,16 +5,16 @@
 # If you want check the logs , its posible in $LOG_FILE variable
 
 #SET LOG FILE
-LOG_FILE="/var/tmp/log_script"
+LOG_FILE="/dev/stdout"
 #SET NETWORK NAME
 DOCKER_NETWORK="ldap"
 #SET CONTAINERS AND IMAGES NAMES
 CONTAINER_LDAP="ldap"
 CONTAINER_KERBEROS="kerberos"
 CONTAINER_CLIENT="client"
-IMAGE_LDAP="antagme/ldap_gssapi"
+IMAGE_LDAP="antagme/ldap_sssd"
 IMAGE_KERBEROS="antagme/kerberos:supervisord"
-IMAGE_CLIENT="antagme/client_gssapi"
+IMAGE_CLIENT="antagme/client:pam_tls"
 
 #----------------------------------------------------------------------#
 
@@ -31,10 +31,10 @@ docker rm $CONTAINER_KERBEROS  &>> $LOG_FILE
 docker rm $CONTAINER_CLIENT  &>> $LOG_FILE
 
 # Remove Images of all Containers?
-#echo " REMOVING IMAGES"
-#docker rmi $IMAGE_LDAP  &>> $LOG_FILE
-#docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
-#docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
+echo " REMOVING IMAGES"
+docker rmi $IMAGE_LDAP  &>> $LOG_FILE
+docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
+docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
 
 #REMOVE IF EXISTS 
 echo " Deleting Network"
