@@ -38,7 +38,7 @@ First we perform searchs on the Replica Servers.
 
 Is the same information , now we gonna put some new information in _Producer_ and check if the information was updated in the Replicas
 
-	docker exec --interactive --tty ldap bash -c "echo admin | kinit admin/admin && ldapadd -f /opt/docker/add_entry.ldif"
+    docker exec --interactive --tty ldap bash -c "echo admin | kinit admin/admin && ldapadd -f /opt/docker/add_entry.ldif"
 
 
 Now try again to perform searchs in replica
