@@ -31,15 +31,20 @@ We gonna try some search querys with Client , you need enter into the _Client Co
     docker exec --interactive --tty client bash
     
 Time to try how works.
-First need get a _Kerberos User Ticket_.
+First we perform searchs on the Replica Servers.
 
-    kinit user01
-    
-The password is `kuser01`
+    ldapsearch -h ldaprepl.edt.org -x
+    ldapsearch -h ldaprepl2.edt.org -x
 
-Check if the ticket is getting properly.
+Is the same information , now we gonna put some new information in _Producer_ and check if the information was updated in the Replicas
 
-    klist
+	docker exec --interactive --tty ldap bash -c "echo admin | kinit admin/admin && ldapadd -f /opt/docker/add_entry.ldif"
+
+
+Now try again to perform searchs in replica
+
+    ldapsearch -h ldaprepl.edt.org -x
+    ldapsearch -h ldaprepl2.edt.org -x
 
 Check if ldap transform properly the ticket.
 
