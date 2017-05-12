@@ -90,7 +90,77 @@ These dockers containers are not interactive, to access you have to do the follo
 If you preffer to use an Automated Builds , can take the script i created for this.[HERE](https://github.com/antagme/Documentation_Project/blob/master/AutomatedScript/start_example3.sh)
 
 ### Configure
-#### 
+#### Configure sssd service for Kerberos Auth , Take information from LDAP, and finally use kerberos password instead ldap
+
+We gonna configure the [sssd](https://fedoraproject.org/wiki/Features/SSSD) , the official daemon offered by Fedora for Control Authentification in the System and configure the Backends and use it in authconfig.
+
+The first step you need is install the _Packets of SSSD_ with this command: `dnf install -y sssd sssd-client authconfig`
+Note:_You should install authconfig packet too for configure system-auth_
+
+Installed this , we gonna configure the [sssd.conf](https://raw.githubusercontent.com/antagme/client/master/files/sssd.conf) file.
+The key parts is configure our kerberos and ldap servers for the properly authentification to system.
+
+Lets see the file:
+
+```
+[sssd]
+config_file_version = 2
+domains = default
+services = pam, nss 
+
+[domain/default]
+id_provider = ldap
+ldap_uri = ldap://172.18.0.2
+ldap_search_base = dc=edt,dc=org
+auth_provider = krb5
+chpass_provider = krb5
+krb5_realm = EDT.ORG
+krb5_server = 172.18.0.3
+krb5_kpasswd = 172.18.0.3
+cache_credentials = True
+krb5_store_password_if_offline = True
+
+[nss]
+filter_groups = root
+filter_users = root
+reconnection_retries = 3
+
+[pam]
+reconnection_retries = 3
+offline_credentials_expiration = 2
+offline_failed_login_attempts = 3
+offline_failed_login_delay = 5
+```
+
+This is my configuration , maybe this can be better , anyway sssd is a pussy daemon.
+Now , we gonna profundize through the key parts.
+
+- **[domain/default]**
+    - `id_provider = ldap `  Define what is our id provider. (if the entry doesnt exist on ldap , can't enter to the system)
+    - `ldap_uri = ldap://172.18.0.2` Our ldap uri (Some problem on Docker with DNS i resolve this putting Ip instead FQDN)
+    - `ldap_search_base = dc=edt,dc=org` Base of the LDAP Backend
+    - `auth_provider = krb5` Define who is the authentification provider , in our case we wants to auth through kerberos for PAM
+    - `chpass_provider = krb5` Define who is the Password PAM provider , in our case is kerberos 
+    - `krb5_realm = EDT.ORG` Define who is our kerberos5 REALM
+    - `krb5_server = 172.18.0.3` Define what is the kerberos5 server (Some problem on Docker with DNS i resolve this putting ip instead FQDN)
+    - `krb5_kpasswd = 172.18.0.3` Define what is the kerberos5 password server ( This enable the possibility to `passwd` and change our password
+    - `cache_credentials = True` Define if you want keep in cache the credentials (This is needed for work without ethernet connection)
+    - `krb5_store_password_if_offline = True` Same the last entry but for password 
+
+- **[nss]**
+    - `filter_groups = root` Filter Group root when do nss resoluion
+    - `filter_users = root` Filter user root when do nss resolution
+    - `reconnection_retries = 3` Try 3 times reconnect and if fail , dont start this process
+
+- **[pam]** 
+    - `reconnection_retries = 3` Try connect 3 times when use PAM and if fail dont start this process
+    - `offline_credentials_expiration = 2` Days to expire the credentials offline
+    - `offline_failed_login_attempts = 3` Chances to fail if offline
+    - `offline_failed_login_delay = 5` Delay for fail login offline
+
+Now we have _sssd.conf_ file propery configurated for _Auth:Kerberos User:LDAP Password:Kerberos_ but we need configure _authconfig_ and check PAM before start all.
+
+#### Configure authconfig for enable sssd
 
 ## Bibliography
 
