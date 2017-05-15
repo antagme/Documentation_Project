@@ -205,7 +205,7 @@ The [file](https://raw.githubusercontent.com/antagme/client/master/files/authcon
  
  We need to configure `su` and `system-auth`PAM files for properly `system authentification` .
  
- Lets see my files(the location is `/etc/pam.d/):
+ Lets see my files(the location is `/etc/pam.d/`):
  
  [`su`](https://raw.githubusercontent.com/antagme/client/master/files/pam.d/su) PAM file:
  
@@ -253,7 +253,7 @@ Note: _This check all from system-auth PAM file_
     session     [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
     session     required      pam_unix.so
     session     optional      pam_sss.so
-    session optional pam_krb5.so
+    session optional pam_krb5.so
 
 The system authentification process will check if this account is UNIX , if not , check if kerberos account.
 
@@ -261,10 +261,23 @@ Note:_I know this PAM file is not the perfect configuration , fell free to help 
 
 #### Client Authentification
 
-Now is time to check if our configuration
+Now is time to check if our configuration is working well!!! We need to start `sssd` daemon in the client machine.
+In our case , we will `supervisorctl start sssd` and we gonna try if the client can start properly with a kerberos user.
+
+We gonna try with our **user01** he have _kuser01_ password.
+
+    su user01
+
+now check with `id` and `who` the identity of the user.
+
+and finally check who we are in Ldap Database.
+
+    ldapwhoami -ZZ
+    
+We configured the system authentification for perform _Kerberos_ **authentification** , **account** information from _Ldap_ and finally the **password** will be retrieved from _Kerberos_
 
 ## Bibliography
 
-- [LDAP System Administration: Putting Directories to Work](https://books.google.es/books?id=utsMgEfnPSEC&pg=PT56&lpg=PT56&dq=%2B+sasl-secprops+noanonymous,noplain,noactive&source=bl&ots=LonrHJNZVc&sig=kL1iSuR3_4SyJYePIiiJHJ3S4Y8&hl=es&sa=X&ved=0ahUKEwiUoNPW787TAhXInRoKHTCmA7sQ6AEIMDAB#v=onepage&q=%2B%20sasl-secprops%20noanonymous%2Cnoplain%2Cnoactive&f=false)
-- [Official OpenLDAP Documentation of SASL Auth](http://www.openldap.org/doc/admin24/sasl.html)
+- [authconfig documentation from red hat](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System-Level_Authentication_Guide/authconfig-install.html)
+- [Fedora Documentation for SSSD Configuration](https://docs.fedoraproject.org/en-US/Fedora/14/html/Deployment_Guide/chap-SSSD_User_Guide-Introduction.html)
 - [Mastering Ldap - Matt Butcher](https://www.packtpub.com/networking-and-servers/mastering-openldap-configuring-securing-and-integrating-directory-services)
