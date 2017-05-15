@@ -162,6 +162,107 @@ Now we have _sssd.conf_ file propery configurated for _Auth:Kerberos User:LDAP P
 
 #### Configure authconfig for enable sssd
 
+I do not know exactly what is the best configuration about authconfig , this tool is a headcache at all , so i will put you my configuration file and if you want to do for you , you are welcome to try it and help me to improve.
+
+The [file](https://raw.githubusercontent.com/antagme/client/master/files/authconfig) is:
+
+    IPADOMAINJOINED=no
+    PASSWDALGORITHM=sha512
+    USESSSD=yes
+    USEMKHOMEDIR=no
+    USEDB=no
+    USEPASSWDQC=no
+    USESSSDAUTH=yes
+    USEHESIOD=no
+    CACHECREDENTIALS=yes
+    USESYSNETAUTH=no
+    USEECRYPTFS=no
+    USESMARTCARD=no
+    USEWINBINDAUTH=no
+    USEIPAV2=no
+    USELDAP=yes
+    WINBINDKRB5=no
+    USELOCAUTHORIZE=yes
+    USEKERBEROS=yes
+    USELDAPAUTH=no
+    USEPAMACCESS=no
+    USEWINBIND=no
+    FORCELEGACY=no
+    USEPWQUALITY=yes
+    USENIS=no
+    FORCESMARTCARD=no
+    USESHADOW=yes
+    USEFPRINTD=no
+    IPAV2NONTP=no
+
+ You should copy this to `/etc/sysconfig/` and perform this order  `authconfig --update`
+ 
+ Now my recommendation is check your `/etc/krb5.conf`, `/etc/nsswitch/` and `/etc/openldap/ldap.conf` for make sure this files not changed for authconfig.
+ 
+ #### Pam Configuration
+ 
+ Now for reach our objetive only need if our pam configuration is the needed and if not , configure this.
+ 
+ We need to configure `su` and `system-auth`PAM files for properly `system authentification` .
+ 
+ Lets see my files(the location is `/etc/pam.d/):
+ 
+ [`su`](https://raw.githubusercontent.com/antagme/client/master/files/pam.d/su) PAM file:
+ 
+         #%PAM-1.0
+        auth		substack	system-auth
+        auth		include		postlogin
+        account		sufficient	pam_succeed_if.so uid = 0 use_uid quiet
+        account		include		system-auth
+        password	include		system-auth
+        session		include		system-auth
+        session		include		postlogin
+        session optional pam_xauth.so
+
+Note: _This check all from system-auth PAM file_
+
+[`system-auth`](https://raw.githubusercontent.com/antagme/client/master/files/pam.d/system-auth) PAM FILE:
+
+    #%PAM-1.0
+    # This file is auto-generated.
+    # User changes will be destroyed the next time authconfig is run.
+    auth        required      pam_env.so
+    auth        [default=1 success=ok] pam_localuser.so
+    auth        [success=done ignore=ignore default=die] pam_unix.so nullok try_first_pass
+    auth        requisite     pam_succeed_if.so uid >= 1000 quiet_success
+    auth        sufficient    pam_sss.so use_authtok
+    auth        sufficient    pam_krb5.so use_first_pass
+    auth        required      pam_deny.so
+
+    account     required      pam_unix.so broken_shadow
+    account     sufficient    pam_localuser.so
+    account     sufficient    pam_succeed_if.so uid < 1000 quiet
+    account     [default=bad success=ok user_unknown=ignore] pam_sss.so
+    account     [default=bad success=ok user_unknown=ignore] pam_krb5.so
+    account     required      pam_permit.so
+
+    password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3 authtok_type=
+    password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok
+    password    sufficient    pam_sss.so user_authtok
+    password    sufficient    pam_krb5.so use_authtok
+    password    required      pam_deny.so
+
+    session     optional      pam_keyinit.so revoke
+    session     required      pam_limits.so
+    -session     optional      pam_systemd.so
+    session     [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
+    session     required      pam_unix.so
+    session     optional      pam_sss.so
+    session optional pam_krb5.so
+
+The system authentification process will check if this account is UNIX , if not , check if kerberos account.
+
+Note:_I know this PAM file is not the perfect configuration , fell free to help me to improve_
+
+#### Client Authentification
+
+Now is time to check if our configuration
+
 ## Bibliography
 
 - [LDAP System Administration: Putting Directories to Work](https://books.google.es/books?id=utsMgEfnPSEC&pg=PT56&lpg=PT56&dq=%2B+sasl-secprops+noanonymous,noplain,noactive&source=bl&ots=LonrHJNZVc&sig=kL1iSuR3_4SyJYePIiiJHJ3S4Y8&hl=es&sa=X&ved=0ahUKEwiUoNPW787TAhXInRoKHTCmA7sQ6AEIMDAB#v=onepage&q=%2B%20sasl-secprops%20noanonymous%2Cnoplain%2Cnoactive&f=false)
