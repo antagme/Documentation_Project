@@ -36,10 +36,10 @@ docker rm $CONTAINER_ZABBIX &>> $LOG_FILE
 
 # Remove Images of all Containers?
 echo " REMOVING IMAGES"
-docker rmi $IMAGE_LDAP  &>> $LOG_FILE
-docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
-docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
-docker rmi $IMAGE_ZABBIX  &>> $LOG_FILE
+#docker rmi $IMAGE_LDAP  &>> $LOG_FILE
+#docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
+#docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
+#docker rmi $IMAGE_ZABBIX  &>> $LOG_FILE
 
 #REMOVE IF EXISTS 
 echo " Deleting Network"
@@ -77,7 +77,8 @@ docker run --name $CONTAINER_CLIENT \
 
 docker run --name $CONTAINER_ZABBIX \
 	--hostname zabbix.edt.org --net $DOCKER_NETWORK \
-	--ip 172.18.0.10  --detach  $IMAGE_ZABBIX &>> $LOG_FILE \
+	--ip 172.18.0.10 --publish=80:80 --detach $IMAGE_ZABBIX \
+	 &>> $LOG_FILE \
 	&& echo " Zabbix Container Created ... %100 Completed"
 
 echo -e " Thanks For the Wait"'!!!'" \n For Access inside Container \
