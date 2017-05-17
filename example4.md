@@ -96,6 +96,11 @@ If you preffer to use an Automated Builds , can take the script i created for th
 
 ### Configure
 #### Enable Database Monitor in LDAP server
+
+In our others examples we didnt enabled _Monitor Database_ option but now we gonna activate for obtain graphs of the LDAP Operations.
+
+Its a simple 
+
 #### Configure Crond for execute Python Script
 #### Configure Zabbix Agentd with PSK
 #### Configure Template for Trap LDAP Monitor Information
