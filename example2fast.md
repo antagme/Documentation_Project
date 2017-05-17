@@ -20,7 +20,7 @@ Note:_This Script only tested in Fedora 24_
 
 If you want to see how it works in your computer , follow this steps.
 
-- Download the start script `wget https://raw.githubusercontent.com/antagme/Documentation_Project/master/AutomatedScript/start_example2_full.sh`
+- Download the start script [start_example2_full.sh](../../raw/master/AutomatedScript/start_example2_full.sh)
 - Run it `/bin/bash start_example2_full.sh`
 - Wait to finish the installation
 
