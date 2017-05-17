@@ -125,5 +125,4 @@ docker run --name $CONTAINER_CLIENT \
 	
 echo -e " Thanks For the Wait"'!!!'" \n For Access inside Container \
 	\n docker exec --interactive --tty [Container Name] bash "
-
 ```
