@@ -12,9 +12,11 @@ DOCKER_NETWORK="ldap"
 CONTAINER_LDAP="ldap"
 CONTAINER_KERBEROS="kerberos"
 CONTAINER_CLIENT="client"
-IMAGE_LDAP="antagme/ldap_sssd"
+CONTAINER_ZABBIX="zabbix"
+IMAGE_LDAP="antagme/ldap_zabbix"
 IMAGE_KERBEROS="antagme/kerberos:supervisord"
-IMAGE_CLIENT="antagme/client:pam_tls"
+IMAGE_CLIENT="antagme/antagme/client_gssapi"
+IMAGE_ZABBIX="antagme/antagme/httpd:zabbix"
 
 #----------------------------------------------------------------------#
 
@@ -23,18 +25,21 @@ echo " STOPING CONTAINERS"
 docker stop $CONTAINER_LDAP &> $LOG_FILE
 docker stop $CONTAINER_KERBEROS &>> $LOG_FILE
 docker stop $CONTAINER_CLIENT &>> $LOG_FILE
+docker stop $CONTAINER_ZABBIX &>> $LOG_FILE
 
 # Remove all containers with this names
 echo " REMOVING CONTAINERS"
 docker rm $CONTAINER_LDAP  &>> $LOG_FILE
 docker rm $CONTAINER_KERBEROS  &>> $LOG_FILE
 docker rm $CONTAINER_CLIENT  &>> $LOG_FILE
+docker rm $CONTAINER_ZABBIX &>> $LOG_FILE
 
 # Remove Images of all Containers?
 echo " REMOVING IMAGES"
 docker rmi $IMAGE_LDAP  &>> $LOG_FILE
 docker rmi $IMAGE_KERBEROS  &>> $LOG_FILE
 docker rmi $IMAGE_CLIENT  &>> $LOG_FILE
+docker rmi $IMAGE_ZABBIX  &>> $LOG_FILE
 
 #REMOVE IF EXISTS 
 echo " Deleting Network"
@@ -53,20 +58,27 @@ echo " RUNNING CONTAINERS IT CAN TAKE A WHILE...WAIT PLEASE!!!"
 docker run --name $CONTAINER_LDAP \
 	--hostname ldap.edt.org --net $DOCKER_NETWORK \
 	--ip 172.18.0.2  --detach $IMAGE_LDAP &>> $LOG_FILE \
-	&& echo " Ldap Container Created... %33 Completed"
+	&& echo " Ldap Container Created... %25 Completed"
 
 ## Docker Kerberos
 
 docker run --name $CONTAINER_KERBEROS \
 	--hostname kserver.edt.org --net $DOCKER_NETWORK \
 	--ip 172.18.0.3  --detach  $IMAGE_KERBEROS &>> $LOG_FILE \
-	&& echo " Kerberos Container Created ... %66 Completed"
+	&& echo " Kerberos Container Created ... %50 Completed"
 	
 ## Docker Client
 docker run --name $CONTAINER_CLIENT \
 	--hostname client.edt.org --net $DOCKER_NETWORK \
 	--ip 172.18.0.8  --detach  $IMAGE_CLIENT &>> $LOG_FILE \
-	&& echo " Client Container Created ... %100 Completed"
-	
+	&& echo " Client Container Created ... %75 Completed"
+
+## Docker Zabbix
+
+docker run --name $CONTAINER_ZABBIX \
+	--hostname zabbix.edt.org --net $DOCKER_NETWORK \
+	--ip 172.18.0.10  --detach  $IMAGE_ZABBIX &>> $LOG_FILE \
+	&& echo " Zabbix Container Created ... %100 Completed"
+
 echo -e " Thanks For the Wait"'!!!'" \n For Access inside Container \
 	\n docker exec --interactive --tty [Container Name] bash "
