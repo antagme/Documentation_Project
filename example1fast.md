@@ -16,7 +16,7 @@ Note:_This Script only tested in Fedora 24_
 
 If you want to see how it works in your computer , follow this steps.
 
-- Download the start script [https://raw.githubusercontent.com/antagme/Documentation_Project/master/AutomatedScript/start_example1.sh](https://raw.githubusercontent.com/antagme/Documentation_Project/master/AutomatedScript/start_example1.sh)
+- Download the start script [start_example1.sh](../../raw/master/AutomatedScript/start_example1.sh)
 - Run it `/bin/bash start_example1.sh`
 - Wait to finish the installation
 
