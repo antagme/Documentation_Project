@@ -14,7 +14,7 @@ _Docker Images_ used for this example:
 
 ### Fast Deployment
 
-I Made this example for show how to configure your _Ldap Server_ , anyway if you only want check how to it works , maybe be interesed in this another explanation.[Automated Build and How it Works](https://github.com/antagme/Documentation_Project/blob/master/example1fast.md)
+I Made this example for show how to configure your _Ldap Server_ , anyway if you only want check how to it works , maybe be interesed in this another explanation.[Automated Build and How it Works](https://github.com/antagme/Documentation_Project/blob/master/example3fast.md)
 
 ## Features
 
@@ -102,7 +102,7 @@ The key parts is configure our kerberos and ldap servers for the properly authen
 
 Lets see the file:
 
-```
+```INI
 [sssd]
 config_file_version = 2
 domains = default
@@ -208,52 +208,54 @@ The [file](https://raw.githubusercontent.com/antagme/client/master/files/authcon
  Lets see my files(the location is `/etc/pam.d/`):
  
  [`su`](https://raw.githubusercontent.com/antagme/client/master/files/pam.d/su) PAM file:
- 
-         #%PAM-1.0
-        auth		substack	system-auth
-        auth		include		postlogin
-        account		sufficient	pam_succeed_if.so uid = 0 use_uid quiet
-        account		include		system-auth
-        password	include		system-auth
-        session		include		system-auth
-        session		include		postlogin
-        session optional pam_xauth.so
+```INI
+ #%PAM-1.0
+auth		substack	system-auth
+auth		include		postlogin
+account		sufficient	pam_succeed_if.so uid = 0 use_uid quiet
+account		include		system-auth
+password	include		system-auth
+session		include		system-auth
+session		include		postlogin
+session optional pam_xauth.so
+```
 
 Note: _This check all from system-auth PAM file_
 
 [`system-auth`](https://raw.githubusercontent.com/antagme/client/master/files/pam.d/system-auth) PAM FILE:
+```INI
+#%PAM-1.0
+# This file is auto-generated.
+# User changes will be destroyed the next time authconfig is run.
+auth        required      pam_env.so
+auth        [default=1 success=ok] pam_localuser.so
+auth        [success=done ignore=ignore default=die] pam_unix.so nullok try_first_pass
+auth        requisite     pam_succeed_if.so uid >= 1000 quiet_success
+auth        sufficient    pam_sss.so use_authtok
+auth        sufficient    pam_krb5.so use_first_pass
+auth        required      pam_deny.so
 
-    #%PAM-1.0
-    # This file is auto-generated.
-    # User changes will be destroyed the next time authconfig is run.
-    auth        required      pam_env.so
-    auth        [default=1 success=ok] pam_localuser.so
-    auth        [success=done ignore=ignore default=die] pam_unix.so nullok try_first_pass
-    auth        requisite     pam_succeed_if.so uid >= 1000 quiet_success
-    auth        sufficient    pam_sss.so use_authtok
-    auth        sufficient    pam_krb5.so use_first_pass
-    auth        required      pam_deny.so
+account     required      pam_unix.so broken_shadow
+account     sufficient    pam_localuser.so
+account     sufficient    pam_succeed_if.so uid < 1000 quiet
+account     [default=bad success=ok user_unknown=ignore] pam_sss.so
+account     [default=bad success=ok user_unknown=ignore] pam_krb5.so
+account     required      pam_permit.so
 
-    account     required      pam_unix.so broken_shadow
-    account     sufficient    pam_localuser.so
-    account     sufficient    pam_succeed_if.so uid < 1000 quiet
-    account     [default=bad success=ok user_unknown=ignore] pam_sss.so
-    account     [default=bad success=ok user_unknown=ignore] pam_krb5.so
-    account     required      pam_permit.so
+password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3 authtok_type=
+password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok
+password    sufficient    pam_sss.so user_authtok
+password    sufficient    pam_krb5.so use_authtok
+password    required      pam_deny.so
 
-    password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3 authtok_type=
-    password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok
-    password    sufficient    pam_sss.so user_authtok
-    password    sufficient    pam_krb5.so use_authtok
-    password    required      pam_deny.so
-
-    session     optional      pam_keyinit.so revoke
-    session     required      pam_limits.so
-    -session     optional      pam_systemd.so
-    session     [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
-    session     required      pam_unix.so
-    session     optional      pam_sss.so
-    session optional pam_krb5.so
+session     optional      pam_keyinit.so revoke
+session     required      pam_limits.so
+-session     optional      pam_systemd.so
+session     [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
+session     required      pam_unix.so
+session     optional      pam_sss.so
+session optional pam_krb5.so
+```
 
 The system authentification process will check if this account is UNIX , if not , check if kerberos account.
 
