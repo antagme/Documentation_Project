@@ -15,8 +15,8 @@ CONTAINER_CLIENT="client"
 CONTAINER_ZABBIX="zabbix"
 IMAGE_LDAP="antagme/ldap_zabbix"
 IMAGE_KERBEROS="antagme/kerberos:supervisord"
-IMAGE_CLIENT="antagme/antagme/client_gssapi"
-IMAGE_ZABBIX="antagme/antagme/httpd:zabbix"
+IMAGE_CLIENT="antagme/client_gssapi"
+IMAGE_ZABBIX="antagme/httpd:zabbix"
 
 #----------------------------------------------------------------------#
 
