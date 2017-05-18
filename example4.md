@@ -427,9 +427,9 @@ Now we have configurated the host and we obtain graphs with LDAP data, lets see.
 
 Now we have Zabbix configurated!
 
-
 ## Bibliography
 
-- [authconfig Documentation from Red Hat](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System-Level_Authentication_Guide/authconfig-install.html)
-- [Fedora Documentation for SSSD Configuration](https://docs.fedoraproject.org/en-US/Fedora/14/html/Deployment_Guide/chap-SSSD_User_Guide-Introduction.html)
-- [Mastering Ldap - Matt Butcher](https://www.packtpub.com/networking-and-servers/mastering-openldap-configuring-securing-and-integrating-directory-services)
+- [Zabbix Documentation](https://www.zabbix.com/documentation/2.2/manual/installation)
+- [Template Information](https://www.zabbix.org/wiki/Zabbix_Templates)
+- [Python Script](https://github.com/bergzand/zabbix-ldap-ops/blob/master/ldapstats.py)
+- [Crond Docker](https://www.ekito.fr/people/run-a-cron-job-with-docker/)
