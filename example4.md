@@ -391,6 +391,11 @@ Note:_The script doesnt work if you dont properly configurated a template!!!_
 
 #### Configure all for get graphs in Zabbix
 
+Having the Agentd working with PSK, the LDAP Monitor enabled, the Croned Python script sending data, we need now configure frontend of Zabbix for finish this journey.
+
+Assuming you have a Zabbix server working, if you dont please check the [Official Tutorial of Zabbix Server installation](https://www.zabbix.com/documentation/3.4/manual/installation/install)
+
+
 
 ## Bibliography
 
