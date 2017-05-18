@@ -231,9 +231,166 @@ stdout_logfile=/var/log/supervisor/crond.log
 ```
 
 Now we have our script executing each minute for sending data to Zabbix.
+
 #### Configure Zabbix Agentd with PSK
+
+For have Zabbix Agent packet installed you should `dnf install -y zabbix-agent`
+Now we gonna a configure the Agent for Secure transmision using a _Pre-shared Key_, its a simple operation.
+
+First we gonna create the key. We gonna use _Openssl_
+
+    openssl rand -hex 32 > /etc/zabbix/zabbix_agentd.psk
+
+Now we gonna configure [`/etc/zabbix/zabbix_agentd.conf`](https://raw.githubusercontent.com/antagme/ldap_zabbix/master/files/zabbix_agentd.conf)
+
+    # This is a configuration file for Zabbix agent daemon (Unix)
+    # To get more information about Zabbix, visit http://www.zabbix.com
+
+    ############ GENERAL PARAMETERS #################
+
+    ### Option: PidFile
+    #	Name of PID file.
+    #
+    # Mandatory: no
+    # Default:
+    # PidFile=/tmp/zabbix_agentd.pid
+    PidFile=/run/zabbix/zabbix_agentd.pid
+
+    ### Option: LogFile
+    #	Log file name for LogType 'file' parameter.
+    #
+    # Mandatory: no
+    # Default:
+    # LogFile=
+
+    LogFile=/var/log/zabbix/zabbix_agentd.log
+
+    ### Option: LogFileSize
+    #	Maximum size of log file in MB.
+    #	0 - disable automatic log rotation.
+    #
+    # Mandatory: no
+    # Range: 0-1024
+    # Default:
+    # LogFileSize=1
+    LogFileSize=0
+
+    ##### Passive checks related
+
+    ### Option: Server
+    #	List of comma delimited IP addresses (or hostnames) of Zabbix servers.
+    #	Incoming connections will be accepted only from the hosts listed here.
+    #	If IPv6 support is enabled then '127.0.0.1', '::127.0.0.1', '::ffff:127.0.0.1' are treated equally.
+    #
+    # Mandatory: no
+    # Default:
+    # Server=
+
+    Server=172.18.0.10
+
+    ### Option: ListenIP
+    #	List of comma delimited IP addresses that the agent should listen on.
+    #	First IP address is sent to Zabbix server if connecting to it to retrieve list of active checks.
+    #
+    # Mandatory: no
+    # Default:
+    ListenIP=0.0.0.0
+
+    ##### Active checks related
+
+    ### Option: ServerActive
+    #	List of comma delimited IP:port (or hostname:port) pairs of Zabbix servers for active checks.
+    #	If port is not specified, default port is used.
+    #	IPv6 addresses must be enclosed in square brackets if port for that host is specified.
+    #	If port is not specified, square brackets for IPv6 addresses are optional.
+    #	If this parameter is not specified, active checks are disabled.
+    #	Example: ServerActive=127.0.0.1:20051,zabbix.domain,[::1]:30051,::1,[12fc::1]
+    #
+    # Mandatory: no
+    # Default:
+    # ServerActive=
+
+    #ServerActive=172.18.0.2
+
+    ### Option: Hostname
+    #	Unique, case sensitive hostname.
+    #	Required for active checks and must match hostname as configured on the server.
+    #	Value is acquired from HostnameItem if undefined.
+    #
+    # Mandatory: no
+    # Default:
+    # Hostname=
+
+    Hostname=Zabbix LDAP
+
+    ### Option: AllowRoot
+    #	Allow the agent to run as 'root'. If disabled and the agent is started by 'root', the agent
+    #	will try to switch to the user specified by the User configuration option instead.
+    #	Has no effect if started under a regular user.
+    #	0 - do not allow
+    #	1 - allow
+    #
+    # Mandatory: no
+    # Default:
+    AllowRoot=1
+
+    ####### TLS-RELATED PARAMETERS #######
+
+    ### Option: TLSConnect
+    #	How the agent should connect to server or proxy. Used for active checks.
+    #	Only one value can be specified:
+    #		unencrypted - connect without encryption
+    #		psk         - connect using TLS and a pre-shared key
+    #		cert        - connect using TLS and a certificate
+    #
+    # Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
+    # Default:
+    TLSConnect=psk
+
+    ### Option: TLSAccept
+    #	What incoming connections to accept.
+    #	Multiple values can be specified, separated by comma:
+    #		unencrypted - accept connections without encryption
+    #		psk         - accept connections secured with TLS and a pre-shared key
+    #		cert        - accept connections secured with TLS and a certificate
+    #
+    # Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
+    # Default:
+    TLSAccept=psk
+
+
+    ### Option: TLSPSKIdentity
+    #	Unique, case sensitive string used to identify the pre-shared key.
+    #
+    # Mandatory: no
+    # Default:
+    TLSPSKIdentity=PSK 001
+
+    ### Option: TLSPSKFile
+    #	Full pathname of a file containing the pre-shared key.
+    #
+    # Mandatory: no
+    # Default:
+    TLSPSKFile=/etc/zabbix/zabbix_agentd.psk
+
+The importants parts is this:
+<pre><code>
+    TLSConnect=psk <b>Enable TLS connection by PSK</b>
+    TLSAccept=psk <b>Accept TLS connection by PSK</b>
+    TLSPSKFile=/home/zabbix/zabbix_agentd.psk <b>Absolute route to PSK file</b>
+    TLSPSKIdentity=PSK 001 <b>The id of PSK each agent should be different number</b>
+</code></pre>
+
+Later we gonna configure it on Zabbix Frontend page.
+
 #### Configure Template for Trap LDAP Monitor Information
+
+We have a _Script_ but in Zabbix for Graphs, we need a template for get the data and drawn the graph.
+I found a nice one in a Github, i catch the idea and i create my own [template](https://github.com/antagme/httpd/blob/master/Template%20OpenLDAP.xml).
+Note:_The script doesnt work if you dont properly configurated a template!!!_
+
 #### Configure all for get graphs in Zabbix
+
 
 ## Bibliography
 
