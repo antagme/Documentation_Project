@@ -203,8 +203,34 @@ Now load this configuration and you have enabled the Database.
 
 #### Configure Crond for execute Python Script
 
-When i decided to _Monitoring_ LDAP Monitor Database with graphs, 
+I found a Python script in a Github repository, this alone is useless, but i decided to work in this, and i modified for my own use, later we gonna check the creation of _Template for Zabbix_
 
+The [script](https://raw.githubusercontent.com/antagme/ldap_zabbix/master/scripts/ldapstats.py) is a simple generation of  _JSON_ data and send it to _Zabbix_
+
+Note:_This is a modified script based on https://github.com/bergzand/zabbix-ldap-ops/blob/master/ldapstats.py_
+
+When i decided to _Monitoring_ LDAP Monitor Database with graphs, i searched for the alternatives i had for perform this properly and i chose do with a _Python_ script and _Crond_ for executing this each minute, the problem was how i can do Crond inside a Container, so lets see this.
+
+When i generate the image, inside the _build_, i create the crontab on the fly, with this simply command.
+
+```Dockerfile
+RUN chmod +x /scripts/ldapstats.py & crontab -l | { cat; echo "* * * * * /scripts/ldapstats.py";} | crontab -
+```
+
+With this command we give permisions to the script, and later create the crontab on the same line.
+
+This crontab will not execute cause in _Container_ Crond is disabled, i configured an entry on [_Supervisord_](https://github.com/antagme/Documentation_Project/blob/master/HowToSupervisor.md) for this. 
+
+```INI
+[program:crond]
+user=root
+command = crond -x proc
+redirect_stderr=true
+stderr_logfile=/var/log/supervisor/crond.log
+stdout_logfile=/var/log/supervisor/crond.log
+```
+
+Now we have our script executing each minute for sending data to Zabbix.
 #### Configure Zabbix Agentd with PSK
 #### Configure Template for Trap LDAP Monitor Information
 #### Configure all for get graphs in Zabbix
