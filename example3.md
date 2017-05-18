@@ -27,7 +27,7 @@ I Made this example for show how to configure your _Ldap Server_ , anyway if you
 ## Requisites
 
 - [Nslcd and nsswitch file configurated for host retrieving](https://github.com/antagme/Documentation_Project/blob/master/HowToConfigureNslcdAndNssSwitch.md)
-- Own Certificates for CA and Server with properly FQDN in Server Certificate.
+- [Own Certificates for CA and Server with properly FQDN in Server Certificate](https://github.com/antagme/Documentation_Project/blob/master/CertificatesLDAP.md).
 
 ## Instalation
 ### Hostnames and our ips
