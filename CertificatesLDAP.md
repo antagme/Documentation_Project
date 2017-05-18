@@ -6,17 +6,27 @@ I gonna explain how create own CA for sign certificates and how create a certifi
 
 ## How to 
 
-### How to create the CA
+- Create the CA
 
-  openssl genrsa -des3 -out CA.key 1024
+      openssl genrsa -des3 -out cakey.pem 1024
 
+- create the CA certificate :
 
-For more information about supervisor check the [Official Documentation](http://supervisord.org/)
-
-## Bibliography
-
-- [Official Supervisor Documentation](http://supervisord.org/)
-- [Docker Documentation abour run multiples services in a docker](https://docs.docker.com/engine/admin/multi-service_container/)
-- [Sample file of Supervisor](https://github.com/Supervisor/supervisor/blob/master/supervisor/skel/sample.conf)
+      openssl req -new -key cakey.pem -x509 -days 1095 -out cacert.pem
 
 
+- For each ldap server (if you have more than one)
+   create a key :
+      
+      openssl genrsa -out ldapkey.pem
+
+- create a servercert.pem certificate request:
+
+      openssl req -new -key ldapkey.pem -out server.pem
+
+- create the ldapcert.pem certificate signed by your own CA :
+
+      openssl x509 -req -days 2000 -in server.pem -CA cacert.pem -CAkey cakey.pem -CAcreateserial -out ldapcert.pem
+
+
+Now we have created our own CA and certificates signed.
