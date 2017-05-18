@@ -395,6 +395,37 @@ Having the Agentd working with PSK, the LDAP Monitor enabled, the Croned Python 
 
 Assuming you have a Zabbix server working, if you dont please check the [Official Tutorial of Zabbix Server installation](https://www.zabbix.com/documentation/3.4/manual/installation/install)
 
+Enter to the Zabbix server , in my case the URL is [localhost/zabbix](http://localhost/zabbix), the **User**=admin and the **pasword**=zabbix.
+
+First we gonna import our [template](https://github.com/antagme/httpd/blob/master/Template%20OpenLDAP.xml) and configure the trap key.
+
+![import_template](images/import_template.png)
+
+Click import and now we gonna configure the Discovery Rules for obtain data from the script.
+
+![discovery_rule](images/discovery_rule.png)
+
+whe should configure for **ldap.stats** _key_ and zabbix_trapper type,  this template will be used in our LDAP Servers hosts.
+
+Now we need create and configure the host with the ip and the templates
+
+![create_host](images/create_host.png)
+
+![host_1](images/host_1.png)
+
+![host_template](images/host_template.png)
+
+And we need to configure de PSK connection for TLS connection, you should put the key obtained in the past for Agent
+
+Note: _Ne need to put None encrypt for Script Data arrive correctly_
+
+![host_psk](images/host_psk.png)
+
+Now we have configurated the host and we obtain graphs with LDAP data, lets see.
+
+![graphs](images/graphs.png)
+
+Now we have Zabbix configurated!
 
 
 ## Bibliography
