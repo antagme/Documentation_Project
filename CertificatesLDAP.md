@@ -20,7 +20,7 @@ I gonna explain how create own CA for sign certificates and how create a certifi
       
       openssl genrsa -out ldapkey.pem
 
-- create a servercert.pem certificate request:
+- create a servercert.pem certificate request (Note: _Is so important put in Common Name the FQDN of the LDAP Server_:
 
       openssl req -new -key ldapkey.pem -out server.pem
 
