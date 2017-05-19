@@ -104,8 +104,8 @@ So we have the next _Dockers Images_ , each with differents configurations:
 * [Kerberos](https://web.mit.edu/kerberos/)
   * [Do _Kerberos Auth_ with _SSSD_](https://github.com/antagme/Documentation_Project/blob/master/example3.md)
   * [_GSSAPI Auth_ with ldap clients](https://github.com/antagme/Documentation_Project/blob/master/example1.md#configure)
-* PAM
-  * For the propertly _System-Auth_ With _Kerberos_ + _LDAP_
+* [PAM](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Managing_Smart_Cards/Pluggable_Authentication_Modules.html)
+  * [For the propertly _System-Auth_ With _Kerberos_ + _LDAP_](https://github.com/antagme/Documentation_Project/blob/master/example3.md)
 * [Zabbix Agentd y Zabbix Server](http://www.zabbix.com/)
   * [For Monitoring  _LDAP Monitor Database_ with a _Python Script_](https://github.com/antagme/Documentation_Project/blob/master/example4.md)
 * Crond
