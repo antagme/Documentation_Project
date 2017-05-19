@@ -1,17 +1,14 @@
-# Example FAST 3 - Client with PAM + SSSD for Kerberos Auth , LDAP user information and Kerberos Password
+# Example fast 4 - Zabbix Monitoring to Monitor Database from Openldap Server
 
 ## Overview
 
-In this model, starting from example one, we will see how to make a more secure authentication in the system using the best of Kerberos and Ldap technologies.
-
-Using this a _Client_ for simulate a school computer.
-
-For this example, in the Client we will see how the System-Auth works with these two technologies, and we will perform a series of checks to make sure it works correctly.
+Finally, in this model, we will see in a Zabbix server how to have monitored by graphs, all the operations that are done in our LDAP Server and all connections to it.
 
 ## Requisites
 
 - Docker Engine working on the system
 - Run this with user with permisions
+- Dont having running Apache server 
 
 Note:_This Script only tested in Fedora 24_
 
@@ -19,38 +16,41 @@ Note:_This Script only tested in Fedora 24_
 
 If you want to see how it works in your computer , follow this steps.
 
-- Download the start script [start_example3.sh](../../raw/master/AutomatedScript/start_example3.sh)
-- Run it `/bin/bash start_example2_full.sh`
+- Download the start script [start_example4.sh](../../raw/master/AutomatedScript/start_example4.sh)
+- Run it `/bin/bash start_example4.sh`
 - Wait to finish the installation
 
 ## Try it
 
-We gonna log with user in the Client , for this you need enter into the _Client Container_.
+We gonna enter into Zabbix Frontent [localhost/zabbix](http://localhost/zabbix)
+Note:_User:admin password:zabbix_
+        
+You should enable _No Encryption_ option for recieve LDAP data, i dont know the reason why need to do this...
+Choose the **host** and enable it.
 
-    docker exec --interactive --tty client bash
-    
-Time to try how works.
-First we gonna log with **user05** , he have LDAP Entry but not Kerberos , so he doesnt able to _System Auth_ the Ldap Password is _jupiter_
+![host_psk](images/host_psk.png)
 
-    su user05
-    
-Now we gonna try log with **user01** with _kuser01_ password. This one have Kerberos entry and LDAP one too. He will enter inside the user.
+Now its time to enter to _Client_ and perform some searches.
 
-	su user01
+	docker exec --interactive --tty client bash
 
-Now try again to perform some checks:
+Obtain ticket of **user01**
 
-- Check if we got the properly user ticket
-	- `klist`
-- Check if LDAP server recognize this
-	- `ldapwhoami -ZZ`
-- Now , do a search
-	- `ldapsearch -ZZ cn=user01`
+	echo "kuser01" | kinit user01
+	
+And now realize some searches to LDAP
+
+	ldapsearch -ZZ cn=user01
     
 
-Now we have a way to System Authentification more secure than only LDAP.
-    
-If you preffer long explanation , you have [How to configure for perform Kerberos System Auth](https://github.com/antagme/Documentation_Project/blob/master/example3.md)
+Now go again to see the graphs, it should be like this.
+
+![graphs](images/graphs.png)
+
+
+
+
+If you preffer long explanation , you have [How to configure Zabbix for Monitoring LDAP](https://github.com/antagme/Documentation_Project/blob/master/example4.md)
 
 ```INI
 #!/bin/bash
