@@ -39,9 +39,9 @@ Finally we will verify that the **Client** can perform searches in both servers,
 _Docker Images_ used for this example:
 - Ldap StartTLS Producer + GSSAPI Keytab [DockerHub](https://hub.docker.com/r/antagme/ldap_producer/) [GitHub](https://github.com/antagme/ldap_producer)
 - Kerberos [DockerHub](https://hub.docker.com/r/antagme/kerberos/) [Github](https://github.com/antagme/kerberos)
-- [Client for try some consults to Database](https://hub.docker.com/r/antagme/client_gssapi/)
-- Ldap StartTLS Consumer with Simple Authentication [DockerHub](https://hub.docker.com/r/antagme/ldap_replica_simple/) [GitHub] (https://github.com/antagme/ldap_replica_simple)
-- Ldap StartTLS Consumer with SASL GSSAPI Authentication [DockerHub](https://hub.docker.com/r/antagme/ldap_replica_gssapi/) [GitHub] (https://github.com/antagme/ldap_replica_gssapi)
+- Client for try some consults to Database [DockerHub](https://hub.docker.com/r/antagme/client_gssapi/) [Github](https://github.com/antagme/client_gssapi)
+- Ldap StartTLS Consumer with Simple Authentication [DockerHub](https://hub.docker.com/r/antagme/ldap_replica_simple/) [GitHub](https://github.com/antagme/ldap_replica_simple)
+- Ldap StartTLS Consumer with SASL GSSAPI Authentication [DockerHub](https://hub.docker.com/r/antagme/ldap_replica_gssapi/) [GitHub](https://github.com/antagme/ldap_replica_gssapi)
 
 [For more information about this model...](https://github.com/antagme/Documentation_Project/blob/master/example2.md)
 
