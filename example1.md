@@ -250,6 +250,12 @@ access to *
   by * read break
 ```
 
+Here `-` means no need,  `+` means add, remenber remove the symbols.
+Write above config to `/etc/openldap/slapd.conf` ,  then re-generate `slapd.d` by
+
+    slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d/
+
+
 I have marked in two colors the things that we have to configure, the red line (-) is where you have to be especially careful, because it can cause confusion.
 
 Let's analyze them one by one.
@@ -311,7 +317,7 @@ Note:_ Important , in the client , you need too the packets installed in _Ldap_ 
       * `kinit user01`
       
 2. Try If ldap perform properly REGEX filtering.
-      * `ldapwhoami -h ldap.edt.org  -b 'dc=edt,dc=org' -Y GSSAPI -ZZ`
+      * `ldapwhoami -h ldap.edt.org  -D 'dc=edt,dc=org' -Y GSSAPI -ZZ`
 
 If the output is like this , you are success!!!
 
